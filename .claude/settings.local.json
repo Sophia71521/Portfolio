@@ -8,7 +8,8 @@
       "mcp__ct-devmcp__do_dis",
       "mcp__ct-devmcp__do_ide",
       "mcp__ct-devmcp__do_pla",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git commit:*)"
     ],
     "deny": [],
     "ask": []
