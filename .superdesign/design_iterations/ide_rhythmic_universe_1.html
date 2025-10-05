@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rhythmic Universe - Theory & Instruments</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-dark: #0a0a0f;
+            --secondary-dark: #1a1a2e;
+            --accent-purple: #6366f1;
+            --accent-violet: #8b5cf6;
+            --accent-pink: #ec4899;
+            --text-primary: #ffffff;
+            --text-secondary: #a1a1aa;
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--primary-dark);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            cursor: none;
+            line-height: 1.6;
+        }
+
+        /* Custom Cursor */
+        .cursor {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--accent-purple);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            mix-blend-mode: difference;
+            transition: all 0.1s ease;
+        }
+
+        .cursor-trail {
+            position: fixed;
+            width: 8px;
+            height: 8px;
+            background: var(--accent-pink);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9998;
+            opacity: 0.6;
+        }
+
+        /* Background with Sound Waves */
+        .background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--secondary-dark) 50%, #16213e 100%);
+        }
+
+        .sound-waves {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            opacity: 0.1;
+        }
+
+        .wave {
+            position: absolute;
+            width: 200%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent-purple), transparent);
+            animation: wave-motion 8s infinite ease-in-out;
+        }
+
+        @keyframes wave-motion {
+            0%, 100% { transform: translateX(-50%) scaleX(0.5); }
+            50% { transform: translateX(-25%) scaleX(1.2); }
+        }
+
+        .floating-equations {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .equation {
+            position: absolute;
+            color: var(--accent-violet);
+            font-size: 1rem;
+            opacity: 0.2;
+            animation: float-equation 20s infinite linear;
+            font-family: 'Courier New', monospace;
+        }
+
+        @keyframes float-equation {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.2; }
+            90% { opacity: 0.2; }
+            100% { transform: translateY(-10vh) rotate(180deg); opacity: 0; }
+        }
+
+        /* Navigation */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(10, 10, 15, 0.9);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--glass-border);
+            padding: 1rem 2rem;
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-pink));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            animation: cosmic-pulse 3s infinite ease-in-out;
+        }
+
+        @keyframes cosmic-pulse {
+            0%, 100% {
+                box-shadow:
+                    0 0 0 0 rgba(99, 102, 241, 0.7),
+                    0 0 0 0 rgba(139, 92, 246, 0.5),
+                    0 0 0 0 rgba(236, 72, 153, 0.3);
+            }
+            50% {
+                box-shadow:
+                    0 0 0 8px rgba(99, 102, 241, 0),
+                    0 0 0 16px rgba(139, 92, 246, 0),
+                    0 0 0 24px rgba(236, 72, 153, 0);
+            }
+        }
+
+        .logo-icon::before {
+            content: '🌌';
+            font-size: 1.1rem;
+            position: absolute;
+            animation: rotate-cosmic 8s infinite linear;
+        }
+
+        @keyframes rotate-cosmic {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .logo-icon::after {
+            content: '♪';
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            font-size: 0.7rem;
+            color: white;
+            animation: float-note-small 2s infinite ease-in-out;
+        }
+
+        @keyframes float-note-small {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-3px); }
+        }
+
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-pink));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.3s ease;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .nav-links a:hover {
+            color: var(--text-primary);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--accent-purple);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* Page Container */
+        .page {
+            display: none;
+            min-height: 100vh;
+            padding-top: 80px;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        /* Home Page */
+        .hero {
+            min-height: 90vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 2rem;
+            position: relative;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            z-index: 1;
+        }
+
+        .hero h1 {
+            font-size: clamp(3rem, 8vw, 6rem);
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, var(--text-primary), var(--accent-purple), var(--accent-pink));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.1;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            margin-bottom: 2.5rem;
+        }
+
+        .cta-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-pink));
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.3);
+        }
+
+        /* Theory Concepts */
+        .theory-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+        }
+
+        .theory-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .theory-header h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-pink));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .concept-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+
+        .concept-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 2rem;
+            backdrop-filter: blur(10px);
+            transition: transform 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .concept-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent-purple), var(--accent-pink));
+        }
+
+        .concept-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .concept-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .concept-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        /* Interactive Elements */
+        .frequency-visualizer {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 2rem;
+            margin: 3rem 0;
+            backdrop-filter: blur(10px);
+        }
+
+        .frequency-controls {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .freq-button {
+            padding: 0.75rem 1.5rem;
+            background: var(--accent-purple);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .freq-button:hover {
+            background: var(--accent-pink);
+            transform: translateY(-2px);
+        }
+
+        .wave-display {
+            height: 120px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .sine-wave {
+            width: 100%;
+            height: 3px;
+            background: var(--accent-purple);
+            position: relative;
+            animation: sine-animation 2s infinite ease-in-out;
+        }
+
+        @keyframes sine-animation {
+            0%, 100% { transform: scaleY(0.5); }
+            50% { transform: scaleY(1.5); }
+        }
+
+        /* Scale Explorer */
+        .scale-explorer {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 2rem;
+            margin: 3rem 0;
+            backdrop-filter: blur(10px);
+        }
+
+        .scale-selector {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .scale-button {
+            padding: 0.5rem 1rem;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .scale-button.active,
+        .scale-button:hover {
+            background: var(--accent-purple);
+            color: white;
+            border-color: var(--accent-purple);
+        }
+
+        .scale-display {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin: 2rem 0;
+        }
+
+        .scale-note {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--accent-purple);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .scale-note:hover {
+            background: var(--accent-pink);
+            transform: scale(1.1);
+        }
+
+        .scale-note.root {
+            background: var(--accent-pink);
+            transform: scale(1.2);
+        }
+
+        /* Instrument Theory Connection */
+        .instrument-theory {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+
+        .instrument-theory-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 15px;
+            padding: 1.5rem;
+            backdrop-filter: blur(10px);
+            transition: transform 0.3s ease;
+        }
+
+        .instrument-theory-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .theory-connection {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--glass-border);
+        }
+
+        .theory-tag {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            background: var(--accent-purple);
+            color: white;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            margin: 0.25rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-links {
+                gap: 1rem;
+            }
+
+            .hero {
+                padding: 1rem;
+            }
+
+            .theory-container {
+                padding: 2rem 1rem;
+            }
+
+            .frequency-controls,
+            .scale-selector {
+                gap: 0.5rem;
+            }
+
+            .freq-button,
+            .scale-button {
+                padding: 0.5rem 1rem;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Custom Cursor -->
+    <div class="cursor"></div>
+    <div class="cursor-trail"></div>
+
+    <!-- Background -->
+    <div class="background">
+        <div class="sound-waves">
+            <div class="wave" style="top: 20%; animation-delay: 0s;"></div>
+            <div class="wave" style="top: 40%; animation-delay: 2s;"></div>
+            <div class="wave" style="top: 60%; animation-delay: 4s;"></div>
+            <div class="wave" style="top: 80%; animation-delay: 6s;"></div>
+        </div>
+        <div class="floating-equations"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo-container">
+                <div class="logo-icon"></div>
+                <div class="logo-text">Rhythmic Universe</div>
+            </div>
+            <ul class="nav-links">
+                <li><a href="#" onclick="showPage('home')">Home</a></li>
+                <li><a href="#" onclick="showPage('concepts')">Concepts</a></li>
+                <li><a href="#" onclick="showPage('instruments')">Instruments</a></li>
+                <li><a href="#" onclick="showPage('explorer')">Explorer</a></li>
+                <li><a href="#" onclick="showPage('about')">About</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Home Page -->
+    <div id="home" class="page active">
+        <section class="hero">
+            <div class="hero-content">
+                <h1>Rhythmic Universe</h1>
+                <p>Journey through the cosmic connections between musical theory and instruments - where every frequency echoes the harmony of the universe itself.</p>
+                <a href="#" onclick="showPage('concepts')" class="cta-button">
+                    <span>🌌</span>
+                    Explore Cosmos
+                </a>
+            </div>
+        </section>
+    </div>
+
+    <!-- Concepts Page -->
+    <div id="concepts" class="page">
+        <div class="theory-container">
+            <div class="theory-header">
+                <h1>Cosmic Principles</h1>
+                <p>The universal laws that govern both celestial bodies and musical creation</p>
+            </div>
+
+            <div class="concept-grid">
+                <div class="concept-card">
+                    <span class="concept-icon">〜</span>
+                    <h3>Sound Waves & Frequency</h3>
+                    <p>Sound is created by vibrations traveling through air. The frequency of these vibrations determines pitch - faster vibrations create higher pitches, slower vibrations create lower pitches.</p>
+                </div>
+
+                <div class="concept-card">
+                    <span class="concept-icon">⚡</span>
+                    <h3>Resonance</h3>
+                    <p>When an object vibrates at its natural frequency, it resonates, amplifying the sound. Instrument bodies are designed to resonate at specific frequencies to enhance tone.</p>
+                </div>
+
+                <div class="concept-card">
+                    <span class="concept-icon">🎵</span>
+                    <h3>Harmonics & Overtones</h3>
+                    <p>Musical notes contain multiple frequencies - the fundamental and harmonics. This harmonic content gives each instrument its unique timbre and character.</p>
+                </div>
+
+                <div class="concept-card">
+                    <span class="concept-icon">📊</span>
+                    <h3>Equal Temperament</h3>
+                    <p>The tuning system that divides the octave into 12 equal semitones, allowing instruments to play together in any key. This system underlies modern Western music.</p>
+                </div>
+
+                <div class="concept-card">
+                    <span class="concept-icon">🎶</span>
+                    <h3>Scales & Intervals</h3>
+                    <p>Specific patterns of intervals between notes create scales. These mathematical relationships produce the emotional qualities we associate with different modes and keys.</p>
+                </div>
+
+                <div class="concept-card">
+                    <span class="concept-icon">🔄</span>
+                    <h3>Standing Waves</h3>
+                    <p>In wind and string instruments, standing wave patterns determine which pitches can be produced. The length and thickness of strings or air columns affect these patterns.</p>
+                </div>
+            </div>
+
+            <!-- Interactive Frequency Visualizer -->
+            <div class="frequency-visualizer">
+                <h3 style="text-align: center; margin-bottom: 1.5rem;">Frequency Spectrum</h3>
+                <p style="text-align: center; color: var(--text-secondary); margin-bottom: 2rem;">Explore the cosmic spectrum of frequencies that create all musical sound</p>
+
+                <div class="frequency-controls">
+                    <button class="freq-button" onclick="playFrequency('low')">Low (80-250 Hz)</button>
+                    <button class="freq-button" onclick="playFrequency('mid')">Mid (250-2000 Hz)</button>
+                    <button class="freq-button" onclick="playFrequency('high')">High (2000-8000 Hz)</button>
+                </div>
+
+                <div class="wave-display">
+                    <div class="sine-wave" id="waveDisplay"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Instruments Page -->
+    <div id="instruments" class="page">
+        <div class="theory-container">
+            <div class="theory-header">
+                <h1>Stellar Instruments</h1>
+                <p>How cosmic principles manifest in earthly instruments</p>
+            </div>
+
+            <div class="instrument-theory">
+                <div class="instrument-theory-card">
+                    <h3>🎻 String Instruments</h3>
+                    <p>String length, tension, and thickness determine pitch. Harmonics are created by stopping strings at fractional lengths.</p>
+                    <div class="theory-connection">
+                        <div class="theory-tag">Standing Waves</div>
+                        <div class="theory-tag">Harmonics</div>
+                        <div class="theory-tag">Resonance</div>
+                    </div>
+                </div>
+
+                <div class="instrument-theory-card">
+                    <h3>🎺 Brass Instruments</h3>
+                    <p>Lip vibration creates the fundamental frequency. Tube length and valve combinations change the harmonic series available.</p>
+                    <div class="theory-connection">
+                        <div class="theory-tag">Harmonic Series</div>
+                        <div class="theory-tag">Air Column</div>
+                        <div class="theory-tag">Embouchure</div>
+                    </div>
+                </div>
+
+                <div class="instrument-theory-card">
+                    <h3>🎷 Woodwinds</h3>
+                    <p>Reed vibrations or air splitting across edges create sound. Hole placement follows mathematical ratios for proper intonation.</p>
+                    <div class="theory-connection">
+                        <div class="theory-tag">Air Column</div>
+                        <div class="theory-tag">Acoustic Length</div>
+                        <div class="theory-tag">Reed Physics</div>
+                    </div>
+                </div>
+
+                <div class="instrument-theory-card">
+                    <h3>🎹 Keyboards</h3>
+                    <p>String length decreases exponentially for each semitone. Hammers and dampers control attack, sustain, and decay characteristics.</p>
+                    <div class="theory-connection">
+                        <div class="theory-tag">Equal Temperament</div>
+                        <div class="theory-tag">String Ratios</div>
+                        <div class="theory-tag">Sympathetic Resonance</div>
+                    </div>
+                </div>
+
+                <div class="instrument-theory-card">
+                    <h3>🥁 Percussion</h3>
+                    <p>Membrane vibration patterns create different tones. Drum size, tension, and material affect fundamental frequency and timbre.</p>
+                    <div class="theory-connection">
+                        <div class="theory-tag">Membrane Physics</div>
+                        <div class="theory-tag">Resonant Cavity</div>
+                        <div class="theory-tag">Decay Rates</div>
+                    </div>
+                </div>
+
+                <div class="instrument-theory-card">
+                    <h3>🎤 Voice</h3>
+                    <p>Vocal fold vibration creates the fundamental. Vocal tract shaping filters harmonics to create vowels and resonant formants.</p>
+                    <div class="theory-connection">
+                        <div class="theory-tag">Formants</div>
+                        <div class="theory-tag">Vocal Folds</div>
+                        <div class="theory-tag">Resonant Filtering</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Explorer Page -->
+    <div id="explorer" class="page">
+        <div class="theory-container">
+            <div class="theory-header">
+                <h1>Galactic Explorer</h1>
+                <p>Navigate the vast universe of musical relationships</p>
+            </div>
+
+            <!-- Scale Explorer -->
+            <div class="scale-explorer">
+                <h3 style="text-align: center; margin-bottom: 1.5rem;">Constellation Scales</h3>
+                <p style="text-align: center; color: var(--text-secondary); margin-bottom: 2rem;">Map the stellar patterns that create musical constellations</p>
+
+                <div class="scale-selector">
+                    <button class="scale-button active" onclick="showScale('major')">Major</button>
+                    <button class="scale-button" onclick="showScale('minor')">Natural Minor</button>
+                    <button class="scale-button" onclick="showScale('pentatonic')">Pentatonic</button>
+                    <button class="scale-button" onclick="showScale('blues')">Blues</button>
+                    <button class="scale-button" onclick="showScale('dorian')">Dorian</button>
+                </div>
+
+                <div class="scale-display" id="scaleDisplay">
+                    <!-- Scale notes will be populated by JavaScript -->
+                </div>
+
+                <div style="text-align: center; margin-top: 2rem;">
+                    <p style="color: var(--text-secondary); font-size: 0.9rem;">
+                        <span style="color: var(--accent-pink);">●</span> Root Star &nbsp;&nbsp;
+                        <span style="color: var(--accent-purple);">●</span> Constellation Notes
+                    </p>
+                </div>
+            </div>
+
+            <!-- Interval Calculator -->
+            <div class="frequency-visualizer">
+                <h3 style="text-align: center; margin-bottom: 1.5rem;">Universal Ratios</h3>
+                <p style="text-align: center; color: var(--text-secondary); margin-bottom: 2rem;">The mathematical constants that govern both music and cosmic harmony</p>
+
+                <div class="concept-grid">
+                    <div class="concept-card">
+                        <h4>Perfect Octave</h4>
+                        <p>Frequency Ratio: 2:1</p>
+                        <p style="font-size: 0.9rem; color: var(--text-secondary);">Same note, doubled frequency</p>
+                    </div>
+                    <div class="concept-card">
+                        <h4>Perfect Fifth</h4>
+                        <p>Frequency Ratio: 3:2</p>
+                        <p style="font-size: 0.9rem; color: var(--text-secondary);">Most consonant interval</p>
+                    </div>
+                    <div class="concept-card">
+                        <h4>Perfect Fourth</h4>
+                        <p>Frequency Ratio: 4:3</p>
+                        <p style="font-size: 0.9rem; color: var(--text-secondary);">Complement of the fifth</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- About Page -->
+    <div id="about" class="page">
+        <div class="theory-container">
+            <div class="theory-header">
+                <h1>About Rhythmic Universe</h1>
+            </div>
+
+            <div class="concept-card" style="max-width: 800px; margin: 0 auto;">
+                <p style="font-size: 1.1rem; margin-bottom: 1.5rem;">Rhythmic Universe explores the profound connections between cosmic phenomena and musical expression. From the rotation of planets to the vibration of strings, rhythm governs both the celestial and the sonic.</p>
+
+                <p style="margin-bottom: 1.5rem;">Ancient civilizations understood that music and mathematics were reflections of universal order. Modern science reveals that the same wave principles governing sound also describe light, radio waves, and even quantum mechanics.</p>
+
+                <p style="margin-bottom: 1.5rem;">This cosmic perspective illuminates how every musical instrument participates in the grand symphony of the universe, following the same fundamental laws that govern stellar formation and galactic motion.</p>
+
+                <p>Journey through this rhythmic universe to discover how earthly music connects us to the infinite patterns and frequencies that shape our cosmos.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Scale data
+        const scales = {
+            major: { notes: ['C', 'D', 'E', 'F', 'G', 'A', 'B'], pattern: [0, 2, 4, 5, 7, 9, 11] },
+            minor: { notes: ['C', 'D', 'E♭', 'F', 'G', 'A♭', 'B♭'], pattern: [0, 2, 3, 5, 7, 8, 10] },
+            pentatonic: { notes: ['C', 'D', 'E', 'G', 'A'], pattern: [0, 2, 4, 7, 9] },
+            blues: { notes: ['C', 'E♭', 'F', 'F#', 'G', 'B♭'], pattern: [0, 3, 5, 6, 7, 10] },
+            dorian: { notes: ['C', 'D', 'E♭', 'F', 'G', 'A', 'B♭'], pattern: [0, 2, 3, 5, 7, 9, 10] }
+        };
+
+        // Page Navigation
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            document.getElementById(pageId).classList.add('active');
+            window.scrollTo(0, 0);
+        }
+
+        // Scale Explorer
+        function showScale(scaleType) {
+            // Update buttons
+            document.querySelectorAll('.scale-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            // Display scale
+            const scale = scales[scaleType];
+            const display = document.getElementById('scaleDisplay');
+            display.innerHTML = '';
+
+            scale.notes.forEach((note, index) => {
+                const noteElement = document.createElement('div');
+                noteElement.className = 'scale-note';
+                if (index === 0) noteElement.classList.add('root');
+                noteElement.textContent = note;
+                noteElement.onclick = () => playNote(note);
+                display.appendChild(noteElement);
+            });
+        }
+
+        // Frequency Visualizer
+        function playFrequency(range) {
+            const waveDisplay = document.getElementById('waveDisplay');
+            waveDisplay.style.animationDuration = range === 'low' ? '3s' : range === 'mid' ? '2s' : '1s';
+            console.log(`Playing ${range} frequency range`);
+        }
+
+        // Note Player
+        function playNote(note) {
+            console.log(`Playing note: ${note}`);
+        }
+
+        // Custom Cursor
+        const cursor = document.querySelector('.cursor');
+        const cursorTrail = document.querySelector('.cursor-trail');
+        let mouseX = 0, mouseY = 0;
+        let trailX = 0, trailY = 0;
+
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+        });
+
+        function animateCursor() {
+            cursor.style.left = mouseX + 'px';
+            cursor.style.top = mouseY + 'px';
+
+            trailX += (mouseX - trailX) * 0.1;
+            trailY += (mouseY - trailY) * 0.1;
+            cursorTrail.style.left = trailX + 'px';
+            cursorTrail.style.top = trailY + 'px';
+
+            requestAnimationFrame(animateCursor);
+        }
+        animateCursor();
+
+        // Hover effects
+        document.querySelectorAll('a, button, .concept-card, .scale-note').forEach(el => {
+            el.addEventListener('mouseenter', () => {
+                cursor.style.transform = 'scale(1.5)';
+                cursor.style.background = 'rgba(99, 102, 241, 0.3)';
+            });
+            el.addEventListener('mouseleave', () => {
+                cursor.style.transform = 'scale(1)';
+                cursor.style.background = 'transparent';
+            });
+        });
+
+        // Floating Equations
+        function createFloatingEquations() {
+            const container = document.querySelector('.floating-equations');
+            const equations = ['f = 1/T', 'λ = v/f', 'f₂ = 2f₁', 'v = √(T/μ)', 'f = nv/2L'];
+
+            for (let i = 0; i < 8; i++) {
+                const equation = document.createElement('div');
+                equation.className = 'equation';
+                equation.textContent = equations[Math.floor(Math.random() * equations.length)];
+                equation.style.left = Math.random() * 100 + '%';
+                equation.style.animationDelay = Math.random() * 20 + 's';
+                equation.style.animationDuration = (Math.random() * 5 + 15) + 's';
+                container.appendChild(equation);
+            }
+        }
+
+        // Initialize
+        createFloatingEquations();
+        showScale('major');
+    </script>
+</body>
+</html>

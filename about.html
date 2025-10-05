@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About - MotionCraft Studio</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            background: #1a237e;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        /* Enhanced background animations with more colors */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(circle at 20% 20%, rgba(63, 81, 181, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(156, 39, 176, 0.12) 0%, transparent 50%),
+                radial-gradient(circle at 20% 80%, rgba(233, 30, 99, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(33, 150, 243, 0.15) 0%, transparent 50%);
+            animation: colorfulFloat 25s ease-in-out infinite;
+            z-index: -2;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(circle at 50% 50%, rgba(255, 193, 7, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 30% 70%, rgba(76, 175, 80, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 70% 30%, rgba(255, 87, 34, 0.08) 0%, transparent 40%);
+            animation: colorfulFloat2 30s ease-in-out infinite reverse;
+            z-index: -1;
+        }
+
+        @keyframes colorfulFloat {
+            0%, 100% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 0.8;
+            }
+            25% {
+                transform: translateY(-15px) rotate(2deg);
+                opacity: 1;
+            }
+            50% {
+                transform: translateY(-5px) rotate(-1deg);
+                opacity: 0.9;
+            }
+            75% {
+                transform: translateY(-20px) rotate(1.5deg);
+                opacity: 0.95;
+            }
+        }
+
+        @keyframes colorfulFloat2 {
+            0%, 100% {
+                transform: translateX(0) translateY(0) rotate(0deg);
+                opacity: 0.6;
+            }
+            33% {
+                transform: translateX(10px) translateY(-10px) rotate(-1deg);
+                opacity: 0.8;
+            }
+            66% {
+                transform: translateX(-5px) translateY(15px) rotate(2deg);
+                opacity: 0.7;
+            }
+        }
+
+        /* Navigation */
+        .navbar {
+            position: sticky;
+            top: 0;
+            width: 100%;
+            background: rgba(26, 35, 126, 0.8);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 0.75rem 0;
+            z-index: 1000;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .navbar.scrolled {
+            background: rgba(26, 35, 126, 0.95);
+            box-shadow: 0 1px 20px rgba(0, 0, 0, 0.2);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo-text {
+            color: #ffffff;
+            font-size: 1.25rem;
+            font-weight: 600;
+            letter-spacing: -0.3px;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            font-weight: 400;
+            font-size: 0.95rem;
+            padding: 0.5rem 0;
+            transition: all 0.3s ease;
+            position: relative;
+            letter-spacing: 0.3px;
+        }
+
+        .nav-link.active {
+            color: #ffffff;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: linear-gradient(90deg, #2196f3, #e91e63);
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            color: #ffffff;
+        }
+
+        .nav-link:hover::after,
+        .nav-link.active::after {
+            width: 100%;
+        }
+
+        .nav-link:focus {
+            outline: 1px solid rgba(255, 255, 255, 0.5);
+            outline-offset: 4px;
+            border-radius: 2px;
+        }
+
+        /* Main content */
+        .main-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+            color: white;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .page-title {
+            font-size: 3rem;
+            font-weight: 300;
+            color: #ffffff;
+            margin-bottom: 1rem;
+            letter-spacing: -0.5px;
+        }
+
+        .page-subtitle {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.8);
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 3rem;
+            margin: 4rem 0;
+        }
+
+        .content-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 2rem;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .content-card:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-5px);
+        }
+
+        .content-card h3 {
+            font-size: 1.5rem;
+            font-weight: 500;
+            color: #ffffff;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #2196f3, #e91e63);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .content-card p {
+            font-size: 1rem;
+            line-height: 1.7;
+            color: rgba(255, 255, 255, 0.85);
+        }
+
+        .highlight-section {
+            background: rgba(33, 150, 243, 0.1);
+            border: 1px solid rgba(33, 150, 243, 0.2);
+            border-radius: 12px;
+            padding: 3rem;
+            margin: 4rem 0;
+            text-align: center;
+        }
+
+        .highlight-section h2 {
+            font-size: 2.2rem;
+            font-weight: 400;
+            color: #ffffff;
+            margin-bottom: 1.5rem;
+        }
+
+        .highlight-section p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: rgba(255, 255, 255, 0.9);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* Mobile responsiveness */
+        @media (max-width: 768px) {
+            .nav-container {
+                padding: 0 1rem;
+            }
+
+            .nav-links {
+                gap: 2rem;
+            }
+
+            .nav-link {
+                font-size: 0.9rem;
+            }
+
+            .logo-text {
+                font-size: 1.1rem;
+            }
+
+            .main-content {
+                padding: 2rem 1rem;
+            }
+
+            .page-title {
+                font-size: 2.5rem;
+            }
+
+            .content-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .content-card {
+                padding: 1.5rem;
+            }
+
+            .highlight-section {
+                padding: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <div class="brand">
+                <span class="logo-text">MotionCraft Studio</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html" class="nav-link">Home</a></li>
+                <li><a href="about.html" class="nav-link active">About</a></li>
+                <li><a href="#projects" class="nav-link">Projects</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="page-header">
+            <h1 class="page-title">About MotionCraft Studio</h1>
+            <p class="page-subtitle">Professional animation and motion graphics for modern businesses. We create compelling visual experiences that engage audiences and communicate your brand message effectively.</p>
+        </div>
+
+        <div class="content-grid">
+            <div class="content-card">
+                <h3>Our Services</h3>
+                <p>From corporate presentations to web animations, our portfolio showcases innovative solutions across various industries. Each project is crafted with attention to detail and performance optimization, ensuring your message resonates with your audience.</p>
+            </div>
+
+            <div class="content-card">
+                <h3>Our Projects</h3>
+                <p>We specialize in creating dynamic animations, interactive web experiences, and compelling motion graphics that bring brands to life. Every project is a new opportunity to push creative boundaries and deliver exceptional results.</p>
+            </div>
+
+            <div class="content-card">
+                <h3>Our Team</h3>
+                <p>Our team consists of passionate designers, animators, and developers who share a common vision: to transform ideas into stunning visual experiences that captivate and inspire audiences across all platforms.</p>
+            </div>
+
+            <div class="content-card">
+                <h3>Our Process</h3>
+                <p>We believe in collaborative creation. From initial concept to final delivery, we work closely with our clients to ensure every animation tells their unique story and achieves their business objectives.</p>
+            </div>
+        </div>
+
+        <div class="highlight-section">
+            <h2>Ready to bring your vision to life?</h2>
+            <p>Contact our team to discuss your animation needs and discover how we can help elevate your brand through motion design. Let's create something extraordinary together.</p>
+        </div>
+    </main>
+
+    <script>
+        let ticking = false;
+
+        function updateNavbar() {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 30) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+            ticking = false;
+        }
+
+        window.addEventListener('scroll', () => {
+            if (!ticking) {
+                requestAnimationFrame(updateNavbar);
+                ticking = true;
+            }
+        });
+
+        // Enhanced keyboard navigation
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    link.click();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

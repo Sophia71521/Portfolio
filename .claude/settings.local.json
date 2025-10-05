@@ -1,0 +1,22 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(claude mcp add:*)",
+      "Bash(claude mcp:*)",
+      "Bash(start index.html)",
+      "Bash(curl:*)",
+      "mcp__ct-devmcp__do_dis",
+      "mcp__ct-devmcp__do_ide",
+      "mcp__ct-devmcp__do_pla",
+      "Bash(git add:*)"
+    ],
+    "deny": [],
+    "ask": []
+  },
+  "enableAllProjectMcpServers": true,
+  "enabledMcpjsonServers": [
+    "context7",
+    "ct-devmcp",
+    "vexmcp"
+  ]
+}

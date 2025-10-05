@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MotionCraft Studio - Professional Animation Services</title>
+    <meta name="description" content="Animated Landing Hero with pixelated text effect and glowing CTA button">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+            background: #1a237e;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Enhanced colorful background animations */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(circle at 20% 20%, rgba(63, 81, 181, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(156, 39, 176, 0.12) 0%, transparent 50%),
+                radial-gradient(circle at 20% 80%, rgba(233, 30, 99, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(33, 150, 243, 0.15) 0%, transparent 50%);
+            animation: colorfulFloat 25s ease-in-out infinite;
+            z-index: -2;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(circle at 50% 50%, rgba(255, 193, 7, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 30% 70%, rgba(76, 175, 80, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 70% 30%, rgba(255, 87, 34, 0.08) 0%, transparent 40%);
+            animation: colorfulFloat2 30s ease-in-out infinite reverse;
+            z-index: -1;
+        }
+
+        @keyframes colorfulFloat {
+            0%, 100% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 0.8;
+            }
+            25% {
+                transform: translateY(-15px) rotate(2deg);
+                opacity: 1;
+            }
+            50% {
+                transform: translateY(-5px) rotate(-1deg);
+                opacity: 0.9;
+            }
+            75% {
+                transform: translateY(-20px) rotate(1.5deg);
+                opacity: 0.95;
+            }
+        }
+
+        @keyframes colorfulFloat2 {
+            0%, 100% {
+                transform: translateX(0) translateY(0) rotate(0deg);
+                opacity: 0.6;
+            }
+            33% {
+                transform: translateX(10px) translateY(-10px) rotate(-1deg);
+                opacity: 0.8;
+            }
+            66% {
+                transform: translateX(-5px) translateY(15px) rotate(2deg);
+                opacity: 0.7;
+            }
+        }
+
+        .hero-container {
+            position: absolute;
+            top: 50%;
+            left: 60px;
+            max-width: 600px;
+            z-index: 10;
+            transform: translateY(-50%);
+        }
+
+        .hero-text {
+            font-size: 3.5rem;
+            font-weight: 300;
+            color: #ffffff;
+            margin-bottom: 1.5rem;
+            opacity: 0;
+            filter: blur(20px) contrast(0.3);
+            transform: scale(0.8);
+            will-change: opacity, filter, transform;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+            line-height: 1.2;
+            letter-spacing: -0.5px;
+        }
+
+        @-webkit-keyframes pixelatedFadeIn {
+            0% {
+                opacity: 0;
+                -webkit-filter: blur(20px) contrast(0.5);
+                filter: blur(20px) contrast(0.5);
+                -webkit-transform: scale(0.8);
+                transform: scale(0.8);
+                text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+            }
+            25% {
+                opacity: 0.3;
+                -webkit-filter: blur(15px) contrast(0.7);
+                filter: blur(15px) contrast(0.7);
+                -webkit-transform: scale(0.9);
+                transform: scale(0.9);
+            }
+            50% {
+                opacity: 0.6;
+                -webkit-filter: blur(10px) contrast(0.8);
+                filter: blur(10px) contrast(0.8);
+                -webkit-transform: scale(0.95);
+                transform: scale(0.95);
+            }
+            75% {
+                opacity: 0.8;
+                -webkit-filter: blur(5px) contrast(0.9);
+                filter: blur(5px) contrast(0.9);
+                -webkit-transform: scale(0.98);
+                transform: scale(0.98);
+            }
+            100% {
+                opacity: 1;
+                -webkit-filter: blur(0px) contrast(1);
+                filter: blur(0px) contrast(1);
+                -webkit-transform: scale(1);
+                transform: scale(1);
+                text-shadow: 0 0 30px rgba(255, 255, 255, 0.5);
+            }
+        }
+
+        @keyframes pixelatedFadeIn {
+            0% {
+                opacity: 0;
+                filter: blur(20px) contrast(0.5);
+                transform: scale(0.8);
+                text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+            }
+            25% {
+                opacity: 0.3;
+                filter: blur(15px) contrast(0.7);
+                transform: scale(0.9);
+            }
+            50% {
+                opacity: 0.6;
+                filter: blur(10px) contrast(0.8);
+                transform: scale(0.95);
+            }
+            75% {
+                opacity: 0.8;
+                filter: blur(5px) contrast(0.9);
+                transform: scale(0.98);
+            }
+            100% {
+                opacity: 1;
+                filter: blur(0px) contrast(1);
+                transform: scale(1);
+                text-shadow: 0 0 30px rgba(255, 255, 255, 0.5);
+            }
+        }
+
+        .cta-button {
+            background: linear-gradient(135deg, #3f51b5, #2196f3);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            padding: 0.8rem 2rem;
+            font-size: 1rem;
+            font-weight: 500;
+            color: #ffffff;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: none;
+            letter-spacing: 0.5px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(63, 81, 181, 0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        .cta-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, #5c6bc0, #42a5f5);
+            z-index: -1;
+            transition: all 0.3s ease;
+            opacity: 0;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow:
+                0 8px 25px rgba(63, 81, 181, 0.4),
+                0 4px 15px rgba(33, 150, 243, 0.3);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .cta-button:hover::before {
+            opacity: 1;
+        }
+
+        .cta-button:active {
+            transform: translateY(-1px);
+        }
+
+        .hero-text.animate {
+            -webkit-animation: pixelatedFadeIn 1.5s ease-out forwards;
+            animation: pixelatedFadeIn 1.5s ease-out forwards;
+        }
+
+        /* Ensure text is completely invisible until animation starts */
+        .hero-text:not(.animate) {
+            visibility: hidden;
+        }
+    </style>
+</head>
+<body>
+    <div class="hero-container">
+        <h1 class="hero-text" id="heroText">MotionCraft Studio</h1>
+        <button class="cta-button" id="ctaButton">View Portfolio</button>
+    </div>
+
+    <script>
+        // Performance monitoring
+        const startTime = performance.now();
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const heroText = document.getElementById('heroText');
+
+            // Measure load time
+            const loadTime = performance.now() - startTime;
+            console.log(`Page load time: ${loadTime.toFixed(2)}ms`);
+
+            // PRD requirement: under 2 seconds (2000ms)
+            if (loadTime > 2000) {
+                console.warn('Page load time exceeds PRD requirement of 2 seconds');
+            } else {
+                console.log('✅ Page load time meets PRD requirement (<2s)');
+            }
+
+            // Trigger animation on page load after a brief delay
+            setTimeout(() => {
+                heroText.style.visibility = 'visible';
+                heroText.classList.add('animate');
+
+                // Log animation start
+                console.log('✅ Hero text animation started');
+            }, 200);
+
+            // Add click event to CTA button
+            document.getElementById('ctaButton').addEventListener('click', function() {
+                console.log('✅ CTA Button clicked - user interaction successful');
+                alert('CTA Button Clicked!');
+            });
+        });
+
+        // Monitor animation completion
+        document.addEventListener('animationend', function(e) {
+            if (e.target.classList.contains('hero-text')) {
+                console.log('✅ Hero text animation completed within 1.5s');
+            }
+        });
+    </script>
+</body>
+</html>

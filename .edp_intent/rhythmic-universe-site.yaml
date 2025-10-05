@@ -1,0 +1,87 @@
+version: "1.0.0"
+generatedBy: "edp-6-mcp"
+timestamp: "2025-01-16T00:00:00Z"
+originalIntent: "User selected 'Rhythmic Universe' concept from ideation phase as their preferred music theory website with cosmic theme, animated galaxy logo, and interactive features"
+scope:
+  allowedPaths:
+    - "index.html"
+    - "about.html"
+    - "*.css"
+    - "*.js"
+    - "assets/*"
+  forbiddenPaths:
+    - ".git/*"
+    - "node_modules/*"
+    - ".superdesign/*"
+  newFiles:
+    - "index.html"
+    - "style.css"
+    - "script.js"
+apiContracts:
+  - name: "showPage"
+    type: "function"
+    params:
+      - name: "pageId"
+        type: "string"
+    returns: "void"
+    required: true
+  - name: "showScale"
+    type: "function"
+    params:
+      - name: "scaleType"
+        type: "string"
+    returns: "void"
+    required: true
+  - name: "playFrequency"
+    type: "function"
+    params:
+      - name: "range"
+        type: "string"
+    returns: "void"
+    required: true
+  - name: "playNote"
+    type: "function"
+    params:
+      - name: "note"
+        type: "string"
+    returns: "void"
+    required: true
+acceptanceCriteria:
+  - id: "AC-001"
+    description: "Functional navigation between all pages"
+    given: "User is on any page"
+    when: "User clicks navigation links"
+    then: "Page transitions smoothly to selected page"
+  - id: "AC-002"
+    description: "Animated cosmic logo displays correctly"
+    given: "Page loads"
+    when: "User views navigation bar"
+    then: "Galaxy logo animates with pulsing and rotation effects"
+  - id: "AC-003"
+    description: "Interactive scale explorer works"
+    given: "User is on Explorer page"
+    when: "User selects different scales"
+    then: "Scale notes display correctly with root note highlighted"
+  - id: "AC-004"
+    description: "Custom cursor follows mouse"
+    given: "Page loads"
+    when: "User moves mouse"
+    then: "Purple cursor with trail follows mouse movement"
+  - id: "AC-005"
+    description: "Dark theme color scheme maintained"
+    given: "Page loads"
+    when: "User views any page"
+    then: "Dark blue/black/purple color scheme is consistent throughout"
+nonGoals:
+  - "Educational course offerings"
+  - "User authentication systems"
+  - "Content management systems"
+  - "E-commerce functionality"
+  - "Blog or news sections"
+  - "Social media integration"
+  - "Audio playback functionality"
+complexityBudget:
+  maxNewFunctions: 8
+  maxNewFiles: 3
+  maxLinesOfCode: 800
+  maxDependencies: 0
