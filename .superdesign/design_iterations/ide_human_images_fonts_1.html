@@ -1,0 +1,1769 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cosmic Explorer - Discover Our Solar System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-dark: #0a0a0f;
+            --secondary-dark: #1a1a2e;
+            --accent-cyan: #06b6d4;
+            --accent-purple: #6366f1;
+            --accent-violet: #8b5cf6;
+            --accent-pink: #ec4899;
+            --text-primary: #ffffff;
+            --text-secondary: #a1a1aa;
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            /* HUMANIZED FONTS: Georgia for headings, System UI for body */
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: var(--primary-dark);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            cursor: none;
+            line-height: 1.6;
+        }
+
+        /* HUMAN FONT: All headings use Georgia serif */
+        h1, h2, h3, h4, h5, h6 {
+            font-family: Georgia, 'Times New Roman', serif;
+            font-weight: 600;
+        }
+
+        /* Custom Cursor */
+        .cursor {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--accent-cyan);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            mix-blend-mode: difference;
+            transition: all 0.1s ease;
+        }
+
+        .cursor-trail {
+            position: fixed;
+            width: 8px;
+            height: 8px;
+            background: var(--accent-purple);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9998;
+            opacity: 0.6;
+        }
+
+        /* Background */
+        .background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            background: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%);
+        }
+
+        .stars {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 3s infinite ease-in-out;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+
+        .nebula {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            opacity: 0.15;
+        }
+
+        .nebula-cloud {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            animation: drift 30s infinite ease-in-out;
+        }
+
+        @keyframes drift {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(50px, 30px) scale(1.1); }
+        }
+
+        /* Navigation with scroll shadow */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(10, 10, 15, 0.9);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--glass-border);
+            padding: 1rem 2rem;
+            transition: box-shadow 0.3s ease;
+        }
+
+        .navbar.scrolled {
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            animation: cosmic-pulse 3s infinite ease-in-out;
+        }
+
+        @keyframes cosmic-pulse {
+            0%, 100% {
+                box-shadow: 0 0 0 0 rgba(6, 182, 212, 0.7), 0 0 0 0 rgba(99, 102, 241, 0.5);
+            }
+            50% {
+                box-shadow: 0 0 0 8px rgba(6, 182, 212, 0), 0 0 0 16px rgba(99, 102, 241, 0);
+            }
+        }
+
+        .logo-icon::before {
+            content: '🪐';
+            font-size: 1.1rem;
+            animation: orbit 10s infinite linear;
+        }
+
+        @keyframes orbit {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.3s ease;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .nav-links a:hover {
+            color: var(--text-primary);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--accent-cyan);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* Page Container */
+        .page {
+            display: none;
+            min-height: 100vh;
+            padding-top: 80px;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 75vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 4rem 2rem 2rem;
+            position: relative;
+        }
+
+        .hero-content {
+            max-width: 900px;
+            z-index: 1;
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 7vw, 5rem);
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, var(--text-primary), var(--accent-cyan), var(--accent-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.2;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            line-height: 1.7;
+        }
+
+        .cta-group {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 2rem;
+        }
+
+        .cta-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(6, 182, 212, 0.3);
+        }
+
+        .cta-button.secondary {
+            background: transparent;
+            border: 2px solid var(--accent-cyan);
+            color: var(--accent-cyan);
+        }
+
+        .cta-button.secondary:hover {
+            background: var(--glass-bg);
+        }
+
+        /* Why Explore Section - ASYMMETRIC */
+        .why-explore {
+            padding: 4.5rem 2rem 3.8rem;
+            background: linear-gradient(180deg, transparent 0%, rgba(99, 102, 241, 0.03) 100%);
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .section-header h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .section-header p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+
+        .reasons-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1.2fr 1fr 1fr;
+            gap: 1.8rem;
+        }
+
+        .reason-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 2rem;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .reason-card.featured {
+            grid-row: span 2;
+            border-radius: 18px;
+            padding: 2.5rem;
+            background: linear-gradient(135deg, rgba(6, 182, 212, 0.08), rgba(99, 102, 241, 0.08));
+        }
+
+        .reason-card:hover {
+            transform: translateY(-5px) rotate(0.5deg);
+            box-shadow: 0 10px 30px rgba(6, 182, 212, 0.2);
+        }
+
+        .reason-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .reason-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 0.75rem;
+            color: var(--accent-cyan);
+        }
+
+        /* Featured Planet Section */
+        .featured-planet {
+            padding: 5.2rem 2rem 4.8rem;
+            background: var(--glass-bg);
+            border-top: 1px solid var(--glass-border);
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .planet-showcase-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .planet-image {
+            text-align: center;
+        }
+
+        .planet-image .planet-emoji-large {
+            font-size: 15rem;
+            display: block;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(-2deg); }
+            50% { transform: translateY(-20px) rotate(2deg); }
+        }
+
+        .planet-details h2 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .planet-details .subtitle {
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+        }
+
+        .planet-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .stat-box {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border-left: 3px solid var(--accent-cyan);
+        }
+
+        .stat-box:nth-child(2) {
+            border-left-color: var(--accent-purple);
+            border-radius: 8px;
+        }
+
+        .stat-box:nth-child(3) {
+            border-left-color: var(--accent-violet);
+            border-radius: 14px;
+        }
+
+        .stat-box:nth-child(4) {
+            border-left-color: var(--accent-pink);
+            border-radius: 10px;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-value {
+            color: var(--accent-cyan);
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        /* Quick Stats Counter */
+        .quick-stats {
+            padding: 4.2rem 2rem 3.5rem;
+        }
+
+        .stats-grid {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 3rem;
+            text-align: center;
+        }
+
+        .stat-item {
+            padding: 2rem 1rem;
+        }
+
+        .stat-number {
+            font-size: 3.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .stat-description {
+            color: var(--text-secondary);
+            font-size: 1rem;
+        }
+
+        /* Did You Know Section */
+        .did-you-know {
+            padding: 3.8rem 2rem 4.5rem;
+            background: linear-gradient(180deg, rgba(99, 102, 241, 0.05) 0%, transparent 100%);
+        }
+
+        .facts-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .fact-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 18px;
+            padding: 2.5rem;
+            backdrop-filter: blur(10px);
+            margin-bottom: 1.8rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .fact-card:nth-child(2) {
+            border-radius: 12px;
+            margin-left: 2rem;
+        }
+
+        .fact-card:nth-child(3) {
+            border-radius: 22px;
+            margin-right: 2rem;
+        }
+
+        .fact-card::before {
+            content: '✦';
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            font-size: 2.5rem;
+            opacity: 0.15;
+            color: var(--accent-cyan);
+        }
+
+        .fact-card h3 {
+            color: var(--accent-cyan);
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+        }
+
+        .fact-card p {
+            color: var(--text-secondary);
+            font-size: 1.05rem;
+            line-height: 1.7;
+        }
+
+        /* Final CTA Section */
+        .final-cta {
+            padding: 6rem 2rem;
+            text-align: center;
+            background: radial-gradient(circle at center, rgba(6, 182, 212, 0.1) 0%, transparent 70%);
+        }
+
+        .final-cta h2 {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .final-cta p {
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+            margin-bottom: 2.5rem;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Content Container */
+        .content-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+        }
+
+        .content-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .content-header h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* EDITORIAL MAGAZINE STYLE PLANET CARDS WITH REAL IMAGES */
+        .planet-grid {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .planet-card-editorial {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: 2.5rem;
+            align-items: center;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 18px;
+            padding: 2.5rem;
+            backdrop-filter: blur(10px);
+            margin-bottom: 3rem;
+            transition: all 0.3s ease;
+        }
+
+        .planet-card-editorial:hover {
+            transform: translateX(5px);
+            box-shadow: 0 15px 40px rgba(6, 182, 212, 0.2);
+        }
+
+        /* Alternate layout for visual variety */
+        .planet-card-editorial:nth-child(even) {
+            grid-template-columns: 1fr 250px;
+        }
+
+        .planet-card-editorial:nth-child(even) .planet-image-circle {
+            order: 2;
+        }
+
+        .planet-image-circle {
+            width: 250px;
+            height: 250px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 3px solid var(--accent-cyan);
+            box-shadow: 0 0 30px rgba(6, 182, 212, 0.3);
+            position: relative;
+        }
+
+        .planet-image-circle img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .planet-content h3 {
+            font-size: 2.2rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        .planet-subtitle {
+            color: var(--accent-cyan);
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 1rem;
+            font-family: system-ui, sans-serif;
+        }
+
+        .planet-content p {
+            color: var(--text-secondary);
+            line-height: 1.7;
+            margin-bottom: 1.5rem;
+        }
+
+        .planet-facts-inline {
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .fact-inline {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .fact-inline-label {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.25rem;
+        }
+
+        .fact-inline-value {
+            color: var(--accent-cyan);
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+
+        /* Calculator Styles */
+        .calculator-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(480px, 1fr));
+            gap: 2.3rem;
+            margin: 3rem 0;
+        }
+
+        .calculator-panel {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 18px;
+            padding: 2.5rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .calculator-panel:nth-child(1) { border-radius: 20px; }
+        .calculator-panel:nth-child(2) { border-radius: 16px; }
+        .calculator-panel:nth-child(3) { border-radius: 22px; }
+        .calculator-panel:nth-child(4) { border-radius: 14px; }
+
+        .calculator-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .calculator-header h3 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        .form-group select,
+        .form-group input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--glass-border);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        .form-group input {
+            cursor: text;
+        }
+
+        .form-group select:focus,
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--accent-cyan);
+            box-shadow: 0 0 10px rgba(6, 182, 212, 0.2);
+        }
+
+        .calculate-btn {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+
+        .calculate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(6, 182, 212, 0.3);
+        }
+
+        .result-box {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background: rgba(6, 182, 212, 0.1);
+            border: 2px solid var(--accent-cyan);
+            border-radius: 12px;
+            display: none;
+        }
+
+        .result-box.show {
+            display: block;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .result-box h4 {
+            color: var(--accent-cyan);
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        .result-item {
+            margin: 0.75rem 0;
+            font-size: 1.05rem;
+        }
+
+        .result-value {
+            color: var(--accent-purple);
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+
+        /* Explorer page simple cards */
+        .simple-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .simple-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 2rem;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .simple-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(6, 182, 212, 0.2);
+        }
+
+        .simple-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--accent-cyan);
+        }
+
+        /* Responsive */
+        @media (max-width: 968px) {
+            .planet-showcase-container {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .planet-image .planet-emoji-large {
+                font-size: 10rem;
+            }
+
+            .reasons-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .reason-card.featured {
+                grid-row: span 1;
+            }
+
+            .fact-card:nth-child(2),
+            .fact-card:nth-child(3) {
+                margin-left: 0;
+                margin-right: 0;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .calculator-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .planet-card-editorial {
+                grid-template-columns: 1fr !important;
+                text-align: center;
+            }
+
+            .planet-card-editorial:nth-child(even) .planet-image-circle {
+                order: 0;
+            }
+
+            .planet-image-circle {
+                margin: 0 auto;
+            }
+
+            .planet-facts-inline {
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                gap: 1rem;
+                font-size: 0.9rem;
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .planet-stats {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Custom Cursor -->
+    <div class="cursor"></div>
+    <div class="cursor-trail"></div>
+
+    <!-- Background -->
+    <div class="background">
+        <div class="stars" id="starsContainer"></div>
+        <div class="nebula">
+            <div class="nebula-cloud" style="width: 400px; height: 400px; background: rgba(99, 102, 241, 0.3); top: 10%; left: 20%;"></div>
+            <div class="nebula-cloud" style="width: 500px; height: 500px; background: rgba(6, 182, 212, 0.2); top: 50%; right: 10%; animation-delay: 5s;"></div>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <div class="logo-container">
+                <div class="logo-icon"></div>
+                <div class="logo-text">Cosmic Explorer</div>
+            </div>
+            <ul class="nav-links">
+                <li><a href="#home" onclick="showPage('home')">Home</a></li>
+                <li><a href="#planets" onclick="showPage('planets')">Planets</a></li>
+                <li><a href="#calculators" onclick="showPage('calculators')">Calculators</a></li>
+                <li><a href="#explorer" onclick="showPage('explorer')">Explorer</a></li>
+                <li><a href="#about" onclick="showPage('about')">About</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Home Page -->
+    <div id="home" class="page active">
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="hero-content">
+                <h1>Explore the Wonders of Our Solar System</h1>
+                <p>Journey through space with interactive tools, fascinating facts, and detailed information about the planets that orbit our Sun. Calculate distances, compare gravity, and discover what makes each world unique.</p>
+                <div class="cta-group">
+                    <a href="#calculators" onclick="showPage('calculators')" class="cta-button">
+                        <span>🚀</span>
+                        Start Calculating
+                    </a>
+                    <a href="#planets" onclick="showPage('planets')" class="cta-button secondary">
+                        <span>🪐</span>
+                        View Planets
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Why Explore Section -->
+        <section class="why-explore">
+            <div class="section-header">
+                <h2>Why Explore Space?</h2>
+                <p>Understanding our cosmic neighborhood helps us appreciate Earth and our place in the universe</p>
+            </div>
+            <div class="reasons-grid">
+                <div class="reason-card featured">
+                    <span class="reason-icon">🔬</span>
+                    <h3>Scientific Discovery</h3>
+                    <p>Every planet teaches us about physics, chemistry, geology, and the conditions that make life possible. From Venus's runaway greenhouse effect to Mars's ancient riverbeds, each world is a laboratory revealing the processes that shape rocky planets.</p>
+                    <p style="margin-top: 1rem; color: var(--text-secondary); font-size: 0.95rem;">Studying other planets helps us understand Earth's climate, predict geological changes, and even search for life beyond our world.</p>
+                </div>
+                <div class="reason-card">
+                    <span class="reason-icon">🌍</span>
+                    <h3>Understand Earth</h3>
+                    <p>By studying other worlds, we gain perspective on Earth's climate, atmosphere, and what makes our planet special.</p>
+                </div>
+                <div class="reason-card">
+                    <span class="reason-icon">🚀</span>
+                    <h3>Future Exploration</h3>
+                    <p>Knowledge of our solar system is essential for future space missions, colonization, and resource utilization.</p>
+                </div>
+                <div class="reason-card">
+                    <span class="reason-icon">🌌</span>
+                    <h3>Cosmic Perspective</h3>
+                    <p>Space exploration expands human knowledge and inspires us to think beyond our daily lives.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Featured Planet Section -->
+        <section class="featured-planet">
+            <div class="planet-showcase-container">
+                <div class="planet-image">
+                    <span class="planet-emoji-large">♂️</span>
+                </div>
+                <div class="planet-details">
+                    <h2>Mars</h2>
+                    <p class="subtitle">The Red Planet - Humanity's Next Frontier</p>
+                    <p style="color: var(--text-secondary); margin-bottom: 2rem; line-height: 1.7;">
+                        Mars is the most Earth-like planet in our solar system, with polar ice caps, ancient river valleys, and the largest volcano in the solar system. It's the primary target for future human colonization.
+                    </p>
+                    <div class="planet-stats">
+                        <div class="stat-box">
+                            <div class="stat-label">Distance from Sun</div>
+                            <div class="stat-value">228M km</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-label">Day Length</div>
+                            <div class="stat-value">24.6h</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-label">Gravity</div>
+                            <div class="stat-value">38% of Earth</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-label">Moons</div>
+                            <div class="stat-value">2</div>
+                        </div>
+                    </div>
+                    <a href="#planets" onclick="showPage('planets')" class="cta-button">
+                        Explore All Planets
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Quick Stats -->
+        <section class="quick-stats">
+            <div class="section-header">
+                <h2>By The Numbers</h2>
+                <p>Our solar system in statistics</p>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <span class="stat-number">8</span>
+                    <p class="stat-description">Planets orbiting our Sun</p>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">200+</span>
+                    <p class="stat-description">Known moons in the system</p>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">4.5B</span>
+                    <p class="stat-description">Years old (approximate age)</p>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">8</span>
+                    <p class="stat-description">Minutes for sunlight to reach Earth</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Did You Know Section -->
+        <section class="did-you-know">
+            <div class="section-header">
+                <h2>Did You Know?</h2>
+                <p>Fascinating facts about our cosmic neighborhood</p>
+            </div>
+            <div class="facts-container">
+                <div class="fact-card">
+                    <h3>A Day on Venus is Longer Than Its Year</h3>
+                    <p>Venus takes 243 Earth days to rotate once on its axis, but only 225 Earth days to orbit the Sun. This means a Venusian day is actually longer than a Venusian year!</p>
+                </div>
+                <div class="fact-card">
+                    <h3>You Could Fit All the Planets Between Earth and the Moon</h3>
+                    <p>The Moon is about 384,400 km from Earth. If you lined up all the planets in our solar system, they would fit in that space with room to spare! The total diameter of all planets is about 380,016 km.</p>
+                </div>
+                <div class="fact-card">
+                    <h3>Saturn Would Float in Water</h3>
+                    <p>Saturn is the least dense planet in our solar system. Its density is actually less than water (0.687 g/cm³), which means if you could find a bathtub big enough, Saturn would float!</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Final CTA -->
+        <section class="final-cta">
+            <h2>Ready to Start Your Journey?</h2>
+            <p>Use our interactive calculators to calculate distances between planets, see what you'd weigh on other worlds, and explore the science behind space travel.</p>
+            <div class="cta-group">
+                <a href="#calculators" onclick="showPage('calculators')" class="cta-button">
+                    <span>🧮</span>
+                    Try Calculators
+                </a>
+                <a href="#about" onclick="showPage('about')" class="cta-button secondary">
+                    <span>ℹ️</span>
+                    Learn More
+                </a>
+            </div>
+        </section>
+    </div>
+
+    <!-- Planets Page WITH REAL NASA IMAGES -->
+    <div id="planets" class="page">
+        <div class="content-container">
+            <div class="content-header">
+                <h1>The Eight Planets</h1>
+                <p>Discover the worlds that orbit our Sun</p>
+            </div>
+
+            <div class="planet-grid">
+                <!-- Mercury -->
+                <div class="planet-card-editorial">
+                    <div class="planet-image-circle">
+                        <img src="https://science.nasa.gov/wp-content/uploads/2024/03/mercury-messenger-globe-pia15162.jpg" alt="Mercury">
+                    </div>
+                    <div class="planet-content">
+                        <div class="planet-subtitle">Terrestrial Planet</div>
+                        <h3>Mercury</h3>
+                        <p>The smallest planet and closest to the Sun, with extreme temperature variations ranging from -173°C at night to 427°C during the day. Its cratered surface resembles our Moon.</p>
+                        <div class="planet-facts-inline">
+                            <div class="fact-inline">
+                                <span class="fact-inline-label">Distance</span>
+                                <span class="fact-inline-value">58M km</span>
+                            </div>
+                            <div class="fact-inline">
+                                <span class="fact-inline-label">Year</span>
+                                <span class="fact-inline-value">88 days</span>
+                            </div>
+                            <div class="fact-inline">
+                                <span class="fact-inline-label">Moons</span>
+                                <span class="fact-inline-value">0</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Venus -->
+                <div class="planet-card-editorial">
+                    <div class="planet-image-circle">
+                        <img src="https://science.nasa.gov/wp-content/uploads/2023/09/Venus_Mariner10_1600.jpg" alt="Venus">
+                    </div>
+                    <div class="planet-content">
+                        <div class="planet-subtitle">Terrestrial Planet</div>
+                        <h3>Venus</h3>
+                        <p>Earth's toxic twin with crushing atmospheric pressure 92 times that of Earth. Surface temperatures reach 464°C, hot enough to melt lead, making it the hottest planet in our solar system.</p>
+                        <div class="planet-facts-inline">
+                            <div class="fact-inline">
+                                <span class="fact-inline-label">Distance</span>
+                                <span class="fact-inline-value">108M km</span>
+                            </div>
+                            <div class="fact-inline">
+                                <span class="fact-inline-label">Year</span>
+                                <span class="fact-inline-value">225 days</span>
+                            </div>
+                            <div class="fact-inline">
+                                <span class="fact-inline-label">Moons</span>
+                                <span class="fact-inline-value">0</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Earth -->
+                <div class="planet-card-editorial">
+                    <div class="planet-image-circle">
+                        <img src="https://science.nasa.gov/wp-content/uploads/2023/04/blue-marble-apollo-17-iss007-e-10807-16x9-1.jpg" alt="Earth">
+                    </div>
+                    <div class="planet-content">
+                        <div class="planet-subtitle">Terrestrial Planet</div>
+                        <h3>Earth</h3>
+                        <p>Our home planet, uniquely positioned in the habitable zone with liquid water covering 71% of its surface. The only known world to harbor life, protected by a magnetic field and oxygen-rich atmosphere.</p>
+                        <div class="planet-facts-inline">
+                            <div class="fact-inline">
+                                <span class="fact-inline-label">Distance</span>
+                                <span class="fact-inline-value">150M km</span>
+                            </div>
+                            <div class="fact-inline">
+                                <span class="fact-inline-label">Year</span>
+                                <span class="fact-inline-value">365 days</span>
+                            </div>
+                            <div class="fact-inline">
+                                <span class="fact-inline-label">Moons</span>
+                                <span class="fact-inline-value">1</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mars -->
+                <div class="planet-card-editorial">
+                    <div class="planet-image-circle">
+                        <img src="https://science.nasa.gov/wp-content/uploads/2023/09/mars-full-disk-enhanced-pia23791.jpg" alt="Mars">
+                    </div>
+                    <div class="planet-content">
+                        <div class="planet-subtitle">Terrestrial Planet</div>
+                        <h3>Mars</h3>
+                        <p>The Red Planet hosts the solar system's largest volcano, Olympus Mons, and deepest canyon, Valles Marineris. Evidence of ancient water flows makes it a prime target for discovering past microbial life.</p>
+                        <div class="planet-facts-inline">
+                            <div class="fact-inline">
+                                <span class="fact-inline-label">Distance</span>
+                                <span class="fact-inline-value">228M km</span>
+                            </div>
+                            <div class="fact-inline">
+                                <span class="fact-inline-label">Year</span>
+                                <span class="fact-inline-value">687 days</span>
+                            </div>
+                            <div class="fact-inline">
+                                <span class="fact-inline-label">Moons</span>
+                                <span class="fact-inline-value">2</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Jupiter -->
+                <div class="planet-card-editorial">
+                    <div class="planet-image-circle">
+                        <img src="https://science.nasa.gov/wp-content/uploads/2024/03/jupiter-marble.jpg" alt="Jupiter">
+                    </div>
+                    <div class="planet-content">
+                        <div class="planet-subtitle">Gas Giant</div>
+                        <h3>Jupiter</h3>
+                        <p>The largest planet in our solar system, Jupiter's Great Red Spot is a storm larger than Earth that's been raging for centuries. Its powerful magnetic field is 20,000 times stronger than Earth's.</p>
+                        <div class="planet-facts-inline">
+                            <div class="fact-inline">
+                                <span class="fact-inline-label">Distance</span>
+                                <span class="fact-inline-value">778M km</span>
+                            </div>
+                            <div class="fact-inline">
+                                <span class="fact-inline-label">Year</span>
+                                <span class="fact-inline-value">12 years</span>
+                            </div>
+                            <div class="fact-inline">
+                                <span class="fact-inline-label">Moons</span>
+                                <span class="fact-inline-value">79</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Saturn -->
+                <div class="planet-card-editorial">
+                    <div class="planet-image-circle">
+                        <img src="https://science.nasa.gov/wp-content/uploads/2023/09/Saturn_Voyager_1.jpg" alt="Saturn">
+                    </div>
+                    <div class="planet-content">
+                        <div class="planet-subtitle">Gas Giant</div>
+                        <h3>Saturn</h3>
+                        <p>Famous for its spectacular ring system made of billions of ice and rock particles ranging from grain-sized to house-sized. The rings span 282,000 km but are only about 10 meters thick in some places.</p>
+                        <div class="planet-facts-inline">
+                            <div class="fact-inline">
+                                <span class="fact-inline-label">Distance</span>
+                                <span class="fact-inline-value">1.4B km</span>
+                            </div>
+                            <div class="fact-inline">
+                                <span class="fact-inline-label">Year</span>
+                                <span class="fact-inline-value">29 years</span>
+                            </div>
+                            <div class="fact-inline">
+                                <span class="fact-inline-label">Moons</span>
+                                <span class="fact-inline-value">80+</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Uranus -->
+                <div class="planet-card-editorial">
+                    <div class="planet-image-circle">
+                        <img src="https://science.nasa.gov/wp-content/uploads/2023/05/uranus-opo9501a-1280x1024-1.jpg" alt="Uranus">
+                    </div>
+                    <div class="planet-content">
+                        <div class="planet-subtitle">Ice Giant</div>
+                        <h3>Uranus</h3>
+                        <p>An ice giant tilted on its side at 98 degrees, orbiting the Sun like a rolling ball. This unique orientation means each pole gets 42 years of continuous sunlight followed by 42 years of darkness.</p>
+                        <div class="planet-facts-inline">
+                            <div class="fact-inline">
+                                <span class="fact-inline-label">Distance</span>
+                                <span class="fact-inline-value">2.9B km</span>
+                            </div>
+                            <div class="fact-inline">
+                                <span class="fact-inline-label">Year</span>
+                                <span class="fact-inline-value">84 years</span>
+                            </div>
+                            <div class="fact-inline">
+                                <span class="fact-inline-label">Moons</span>
+                                <span class="fact-inline-value">27</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Neptune -->
+                <div class="planet-card-editorial">
+                    <div class="planet-image-circle">
+                        <img src="https://science.nasa.gov/wp-content/uploads/2024/03/neptune-full-disk-view-pia01492.jpg" alt="Neptune">
+                    </div>
+                    <div class="planet-content">
+                        <div class="planet-subtitle">Ice Giant</div>
+                        <h3>Neptune</h3>
+                        <p>The windiest planet in our solar system with supersonic winds reaching 1,200 mph (2,000 km/h). Its deep blue color comes from methane in the atmosphere absorbing red light.</p>
+                        <div class="planet-facts-inline">
+                            <div class="fact-inline">
+                                <span class="fact-inline-label">Distance</span>
+                                <span class="fact-inline-value">4.5B km</span>
+                            </div>
+                            <div class="fact-inline">
+                                <span class="fact-inline-label">Year</span>
+                                <span class="fact-inline-value">165 years</span>
+                            </div>
+                            <div class="fact-inline">
+                                <span class="fact-inline-label">Moons</span>
+                                <span class="fact-inline-value">14</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Calculators Page (same as before) -->
+    <div id="calculators" class="page">
+        <div class="content-container">
+            <div class="content-header">
+                <h1>Interactive Calculators</h1>
+                <p>Explore space with real calculations and tools</p>
+            </div>
+
+            <div class="calculator-grid">
+                <!-- Distance Calculator -->
+                <div class="calculator-panel">
+                    <div class="calculator-header">
+                        <h3>🌍 Distance Calculator</h3>
+                        <p style="color: var(--text-secondary); font-size: 0.95rem;">Calculate distances between planets</p>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="planet1">From Planet:</label>
+                        <select id="planet1">
+                            <option value="sun">Sun</option>
+                            <option value="mercury">Mercury</option>
+                            <option value="venus">Venus</option>
+                            <option value="earth" selected>Earth</option>
+                            <option value="mars">Mars</option>
+                            <option value="jupiter">Jupiter</option>
+                            <option value="saturn">Saturn</option>
+                            <option value="uranus">Uranus</option>
+                            <option value="neptune">Neptune</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="planet2">To Planet:</label>
+                        <select id="planet2">
+                            <option value="sun">Sun</option>
+                            <option value="mercury">Mercury</option>
+                            <option value="venus">Venus</option>
+                            <option value="earth">Earth</option>
+                            <option value="mars" selected>Mars</option>
+                            <option value="jupiter">Jupiter</option>
+                            <option value="saturn">Saturn</option>
+                            <option value="uranus">Uranus</option>
+                            <option value="neptune">Neptune</option>
+                        </select>
+                    </div>
+
+                    <button class="calculate-btn" onclick="calculateDistance()">Calculate Distance</button>
+
+                    <div id="distanceResult" class="result-box">
+                        <h4>📊 Results</h4>
+                        <div class="result-item">
+                            Distance: <span class="result-value" id="distanceKm"></span> km
+                        </div>
+                        <div class="result-item">
+                            In Miles: <span class="result-value" id="distanceMiles"></span> miles
+                        </div>
+                        <div class="result-item">
+                            Light Travel Time: <span class="result-value" id="lightTime"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Weight Calculator -->
+                <div class="calculator-panel">
+                    <div class="calculator-header">
+                        <h3>⚖️ Weight on Other Planets</h3>
+                        <p style="color: var(--text-secondary); font-size: 0.95rem;">See what you'd weigh on different worlds</p>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="weightInput">Your Weight on Earth (kg):</label>
+                        <input type="number" id="weightInput" placeholder="70" min="1" max="500">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="targetPlanet">Calculate Weight On:</label>
+                        <select id="targetPlanet">
+                            <option value="mercury">Mercury</option>
+                            <option value="venus">Venus</option>
+                            <option value="mars" selected>Mars</option>
+                            <option value="jupiter">Jupiter</option>
+                            <option value="saturn">Saturn</option>
+                            <option value="uranus">Uranus</option>
+                            <option value="neptune">Neptune</option>
+                        </select>
+                    </div>
+
+                    <button class="calculate-btn" onclick="calculateWeight()">Calculate Weight</button>
+
+                    <div id="weightResult" class="result-box">
+                        <h4>📊 Results</h4>
+                        <div class="result-item">
+                            Your weight on <span id="planetName"></span>: <span class="result-value" id="newWeight"></span> kg
+                        </div>
+                        <div class="result-item">
+                            Gravity: <span class="result-value" id="gravityValue"></span> m/s²
+                        </div>
+                        <div class="result-item">
+                            <span id="weightComparison"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="calculator-grid">
+                <!-- Travel Time Calculator -->
+                <div class="calculator-panel">
+                    <div class="calculator-header">
+                        <h3>🚀 Travel Time Calculator</h3>
+                        <p style="color: var(--text-secondary); font-size: 0.95rem;">How long would it take to reach another planet?</p>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="destination">Destination:</label>
+                        <select id="destination">
+                            <option value="mercury">Mercury</option>
+                            <option value="venus">Venus</option>
+                            <option value="mars" selected>Mars</option>
+                            <option value="jupiter">Jupiter</option>
+                            <option value="saturn">Saturn</option>
+                            <option value="uranus">Uranus</option>
+                            <option value="neptune">Neptune</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="speed">Spacecraft Speed:</label>
+                        <select id="speed">
+                            <option value="40000">Current Technology (40,000 km/h)</option>
+                            <option value="100000" selected>Advanced Propulsion (100,000 km/h)</option>
+                            <option value="299792">Light Speed (299,792 km/s)</option>
+                        </select>
+                    </div>
+
+                    <button class="calculate-btn" onclick="calculateTravelTime()">Calculate Travel Time</button>
+
+                    <div id="travelResult" class="result-box">
+                        <h4>📊 Results</h4>
+                        <div class="result-item">
+                            Travel Time: <span class="result-value" id="travelTime"></span>
+                        </div>
+                        <div class="result-item">
+                            Distance: <span class="result-value" id="travelDistance"></span> km
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Orbital Period Calculator -->
+                <div class="calculator-panel">
+                    <div class="calculator-header">
+                        <h3>🔄 Orbital Period Calculator</h3>
+                        <p style="color: var(--text-secondary); font-size: 0.95rem;">Calculate orbital period using Kepler's 3rd Law</p>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="distanceAU">Distance from Sun (AU):</label>
+                        <input type="number" id="distanceAU" placeholder="1.0" step="0.1" min="0.1">
+                        <small style="color: var(--text-secondary); display: block; margin-top: 0.5rem;">1 AU = Earth's distance from Sun (150M km)</small>
+                    </div>
+
+                    <button class="calculate-btn" onclick="calculateOrbitalPeriod()">Calculate Period</button>
+
+                    <div id="orbitalResult" class="result-box">
+                        <h4>📊 Results</h4>
+                        <div class="result-item">
+                            Orbital Period: <span class="result-value" id="orbitalYears"></span>
+                        </div>
+                        <div class="result-item">
+                            In Earth Days: <span class="result-value" id="orbitalDays"></span>
+                        </div>
+                        <div class="result-item">
+                            <span id="orbitalNote"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Explorer Page -->
+    <div id="explorer" class="page">
+        <div class="content-container">
+            <div class="content-header">
+                <h1>Space Facts & Explorer</h1>
+                <p>Learn fascinating facts about our solar system</p>
+            </div>
+
+            <div class="simple-grid">
+                <div class="simple-card">
+                    <h3>⚡ Light Speed</h3>
+                    <p>Light travels at 299,792 km/s. It takes sunlight 8 minutes and 20 seconds to reach Earth, but over 4 hours to reach Neptune!</p>
+                </div>
+
+                <div class="simple-card">
+                    <h3>🌌 Astronomical Unit</h3>
+                    <p>1 AU (Astronomical Unit) is the distance from Earth to the Sun: 149,597,871 kilometers. It's our cosmic measuring stick for the solar system.</p>
+                </div>
+
+                <div class="simple-card">
+                    <h3>🪐 Saturn's Rings</h3>
+                    <p>Saturn's rings are made of billions of pieces of ice and rock, some as small as grains of sand, others as large as mountains.</p>
+                </div>
+
+                <div class="simple-card">
+                    <h3>🌍 Earth's Gravity</h3>
+                    <p>Earth's gravity is 9.81 m/s². On Jupiter, you'd weigh 2.5 times more. On Mars, only 38% of your Earth weight!</p>
+                </div>
+
+                <div class="simple-card">
+                    <h3>🌙 Moon Facts</h3>
+                    <p>The Moon is slowly drifting away from Earth at about 3.8 cm per year. In the distant past, it was much closer and appeared larger in the sky!</p>
+                </div>
+
+                <div class="simple-card">
+                    <h3>☄️ Asteroid Belt</h3>
+                    <p>The asteroid belt between Mars and Jupiter contains millions of rocky objects, but if you combined them all, they'd form a body smaller than Earth's moon.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- About Page -->
+    <div id="about" class="page">
+        <div class="content-container">
+            <div class="content-header">
+                <h1>About Cosmic Explorer</h1>
+            </div>
+
+            <div class="simple-card" style="max-width: 800px; margin: 0 auto;">
+                <p style="font-size: 1.1rem; margin-bottom: 1.5rem;">Cosmic Explorer combines beautiful design with interactive tools to help you understand our solar system through real calculations, detailed planetary information, and authentic NASA imagery.</p>
+
+                <p style="margin-bottom: 1.5rem;">Use our calculators to discover how far planets are from each other, what you'd weigh on different worlds, how long space travel would take, and explore orbital mechanics using Kepler's laws.</p>
+
+                <p style="margin-bottom: 1.5rem;">All calculations use real astronomical data and scientific formulas. Planet images are from NASA's public domain collection, showcasing real photography from space missions.</p>
+
+                <p>Whether you're a student, educator, space enthusiast, or just curious about the cosmos, Cosmic Explorer provides an interactive and visually stunning way to learn about the worlds that share our Sun.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Planet data
+        const planetData = {
+            sun: { distance: 0, name: 'Sun', gravity: 274 },
+            mercury: { distance: 57.9, name: 'Mercury', gravity: 3.7 },
+            venus: { distance: 108.2, name: 'Venus', gravity: 8.87 },
+            earth: { distance: 149.6, name: 'Earth', gravity: 9.81 },
+            mars: { distance: 227.9, name: 'Mars', gravity: 3.71 },
+            jupiter: { distance: 778.5, name: 'Jupiter', gravity: 24.79 },
+            saturn: { distance: 1434, name: 'Saturn', gravity: 10.44 },
+            uranus: { distance: 2871, name: 'Uranus', gravity: 8.87 },
+            neptune: { distance: 4495, name: 'Neptune', gravity: 11.15 }
+        };
+
+        // Navbar scroll shadow
+        const navbar = document.getElementById('navbar');
+
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // Page Navigation
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            document.getElementById(pageId).classList.add('active');
+            window.scrollTo(0, 0);
+        }
+
+        // Distance Calculator
+        function calculateDistance() {
+            const planet1 = document.getElementById('planet1').value;
+            const planet2 = document.getElementById('planet2').value;
+
+            if (planet1 === planet2) {
+                alert('Please select different planets!');
+                return;
+            }
+
+            const dist1 = planetData[planet1].distance;
+            const dist2 = planetData[planet2].distance;
+            const distanceKm = Math.abs(dist2 - dist1) * 1000000;
+            const distanceMiles = (distanceKm * 0.621371).toFixed(0);
+
+            const lightSpeed = 299792;
+            const timeSeconds = distanceKm / lightSpeed;
+            let lightTime;
+
+            if (timeSeconds < 60) {
+                lightTime = timeSeconds.toFixed(1) + ' seconds';
+            } else if (timeSeconds < 3600) {
+                lightTime = (timeSeconds / 60).toFixed(1) + ' minutes';
+            } else {
+                lightTime = (timeSeconds / 3600).toFixed(1) + ' hours';
+            }
+
+            document.getElementById('distanceKm').textContent = distanceKm.toLocaleString();
+            document.getElementById('distanceMiles').textContent = parseInt(distanceMiles).toLocaleString();
+            document.getElementById('lightTime').textContent = lightTime;
+            document.getElementById('distanceResult').classList.add('show');
+        }
+
+        // Weight Calculator
+        function calculateWeight() {
+            const weight = parseFloat(document.getElementById('weightInput').value);
+            const planet = document.getElementById('targetPlanet').value;
+
+            if (!weight || weight <= 0) {
+                alert('Please enter a valid weight!');
+                return;
+            }
+
+            const earthGravity = 9.81;
+            const planetGravity = planetData[planet].gravity;
+            const newWeight = (weight * planetGravity / earthGravity).toFixed(2);
+            const percentChange = ((planetGravity / earthGravity - 1) * 100).toFixed(0);
+
+            document.getElementById('planetName').textContent = planetData[planet].name;
+            document.getElementById('newWeight').textContent = newWeight;
+            document.getElementById('gravityValue').textContent = planetGravity;
+
+            let comparison;
+            if (percentChange > 0) {
+                comparison = `You'd feel ${percentChange}% heavier!`;
+            } else {
+                comparison = `You'd feel ${Math.abs(percentChange)}% lighter!`;
+            }
+            document.getElementById('weightComparison').textContent = comparison;
+            document.getElementById('weightResult').classList.add('show');
+        }
+
+        // Travel Time Calculator
+        function calculateTravelTime() {
+            const destination = document.getElementById('destination').value;
+            const speed = parseFloat(document.getElementById('speed').value);
+
+            const distance = (planetData[destination].distance - planetData.earth.distance) * 1000000;
+            const absDistance = Math.abs(distance);
+
+            let timeHours;
+            if (speed === 299792) {
+                timeHours = absDistance / (speed * 3600);
+            } else {
+                timeHours = absDistance / speed;
+            }
+
+            let travelTime;
+            if (timeHours < 24) {
+                travelTime = timeHours.toFixed(1) + ' hours';
+            } else if (timeHours < 24 * 365) {
+                travelTime = (timeHours / 24).toFixed(1) + ' days';
+            } else {
+                travelTime = (timeHours / (24 * 365)).toFixed(2) + ' years';
+            }
+
+            document.getElementById('travelTime').textContent = travelTime;
+            document.getElementById('travelDistance').textContent = absDistance.toLocaleString();
+            document.getElementById('travelResult').classList.add('show');
+        }
+
+        // Orbital Period Calculator
+        function calculateOrbitalPeriod() {
+            const distanceAU = parseFloat(document.getElementById('distanceAU').value);
+
+            if (!distanceAU || distanceAU <= 0) {
+                alert('Please enter a valid distance!');
+                return;
+            }
+
+            const periodYears = Math.pow(distanceAU, 1.5);
+            const periodDays = periodYears * 365.25;
+
+            document.getElementById('orbitalYears').textContent = periodYears.toFixed(2) + ' Earth years';
+            document.getElementById('orbitalDays').textContent = periodDays.toFixed(0) + ' days';
+
+            let note = '';
+            if (distanceAU < 1) {
+                note = 'This orbit is closer to the Sun than Earth!';
+            } else if (distanceAU > 5) {
+                note = 'This is in the outer solar system, beyond Jupiter!';
+            } else {
+                note = 'This orbit is in the inner solar system.';
+            }
+            document.getElementById('orbitalNote').textContent = note;
+            document.getElementById('orbitalResult').classList.add('show');
+        }
+
+        // Custom Cursor
+        const cursor = document.querySelector('.cursor');
+        const cursorTrail = document.querySelector('.cursor-trail');
+        let mouseX = 0, mouseY = 0;
+        let trailX = 0, trailY = 0;
+
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+        });
+
+        function animateCursor() {
+            cursor.style.left = mouseX + 'px';
+            cursor.style.top = mouseY + 'px';
+
+            trailX += (mouseX - trailX) * 0.1;
+            trailY += (mouseY - trailY) * 0.1;
+            cursorTrail.style.left = trailX + 'px';
+            cursorTrail.style.top = trailY + 'px';
+
+            requestAnimationFrame(animateCursor);
+        }
+        animateCursor();
+
+        // Hover effects
+        document.querySelectorAll('a, button, .planet-card-editorial, .reason-card, .fact-card, .simple-card, select, input').forEach(el => {
+            el.addEventListener('mouseenter', () => {
+                cursor.style.transform = 'scale(1.5)';
+                cursor.style.background = 'rgba(6, 182, 212, 0.3)';
+            });
+            el.addEventListener('mouseleave', () => {
+                cursor.style.transform = 'scale(1)';
+                cursor.style.background = 'transparent';
+            });
+        });
+
+        // Create Stars
+        function createStars() {
+            const container = document.getElementById('starsContainer');
+            for (let i = 0; i < 200; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.width = Math.random() * 3 + 'px';
+                star.style.height = star.style.width;
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animationDelay = Math.random() * 3 + 's';
+                container.appendChild(star);
+            }
+        }
+
+        // Initialize
+        createStars();
+    </script>
+</body>
+</html>

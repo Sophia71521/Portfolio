@@ -1,0 +1,105 @@
+version: "1.0.0"
+generatedBy: "edp-6-mcp"
+timestamp: "2025-10-05T00:00:00Z"
+originalIntent: "Deploy the humanized final design (ide_humanized_final_1.html) as the main portfolio website"
+scope:
+  allowedPaths:
+    - "index.html"
+    - "about.html"
+    - ".superdesign/design_iterations/ide_humanized_final_1.html"
+  forbiddenPaths:
+    - ".git/"
+    - ".github/"
+    - "node_modules/"
+    - ".claude/"
+    - ".mcp.json"
+  newFiles:
+    - "index.html" # Will overwrite existing
+    - "about.html" # Optional: May create if separate pages needed
+apiContracts:
+  - name: "showPage"
+    type: "function"
+    params:
+      - name: "pageId"
+        type: "string"
+    returns: "void"
+    required: true
+  - name: "calculateDistance"
+    type: "function"
+    params: []
+    returns: "void"
+    required: true
+  - name: "calculateWeight"
+    type: "function"
+    params: []
+    returns: "void"
+    required: true
+  - name: "calculateTravelTime"
+    type: "function"
+    params: []
+    returns: "void"
+    required: true
+  - name: "calculateOrbitalPeriod"
+    type: "function"
+    params: []
+    returns: "void"
+    required: true
+  - name: "createStars"
+    type: "function"
+    params: []
+    returns: "void"
+    required: true
+  - name: "animateCursor"
+    type: "function"
+    params: []
+    returns: "void"
+    required: true
+acceptanceCriteria:
+  - id: "AC-001"
+    description: "Production index.html contains humanized design"
+    given: "User opens index.html in browser"
+    when: "Page loads"
+    then: "Shows humanized cosmic explorer design with all sections"
+  - id: "AC-002"
+    description: "Navigation between pages works"
+    given: "User is on home page"
+    when: "User clicks any nav link (Planets, Calculators, Explorer, About)"
+    then: "Correct page content displays and URL hash updates"
+  - id: "AC-003"
+    description: "All 4 calculators function correctly"
+    given: "User is on Calculators page"
+    when: "User inputs values and clicks Calculate on any calculator"
+    then: "Correct results display based on real astronomical data"
+  - id: "AC-004"
+    description: "Navbar scroll shadow appears on scroll"
+    given: "User is on any page"
+    when: "User scrolls down more than 50px"
+    then: "Navbar gains shadow effect with smooth transition"
+  - id: "AC-005"
+    description: "Custom cursor works throughout site"
+    given: "User has mouse cursor visible"
+    when: "User moves mouse over any page"
+    then: "Custom cursor and trail follow mouse movement"
+  - id: "AC-006"
+    description: "All 8 planets display with information"
+    given: "User navigates to Planets page"
+    when: "Page loads"
+    then: "All 8 planets show with emoji, name, description, and facts"
+  - id: "AC-007"
+    description: "Responsive design works on mobile"
+    given: "User views site on mobile device or narrow viewport"
+    when: "Viewport is less than 768px wide"
+    then: "Layout adapts with single column grids and proper spacing"
+nonGoals:
+  - "Creating new design features not in ide_humanized_final_1.html"
+  - "Adding backend functionality or server-side code"
+  - "Setting up CI/CD or deployment pipelines"
+  - "Creating additional pages beyond the 5 in the design"
+  - "Optimizing performance beyond what's already implemented"
+  - "Adding analytics or tracking scripts"
+  - "Creating separate CSS/JS files (keeping single-file architecture)"
+complexityBudget:
+  maxNewFunctions: 0  # All functions already exist in source file
+  maxNewFiles: 1      # Only index.html (maybe about.html)
+  maxLinesOfCode: 50  # Minimal changes, mostly file copy
+  maxDependencies: 0  # No external dependencies

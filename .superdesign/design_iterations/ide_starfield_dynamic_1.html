@@ -1,0 +1,1267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solar System Explorer - Dynamic Starfield</title>
+    <style>
+        /* PROFESSIONAL SCIENTIFIC DESIGN WITH DYNAMIC STARFIELD */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: #000000;
+            color: #e8edf4;
+            overflow-x: hidden;
+            line-height: 1.7;
+            position: relative;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: "Garamond", "Georgia", "Times New Roman", serif;
+            font-weight: 500;
+            letter-spacing: 0.3px;
+        }
+
+        /* ANIMATED STARFIELD BACKGROUND */
+        #starfield {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+        }
+
+        .star-small {
+            width: 1px;
+            height: 1px;
+            animation: blink-fast 1.5s ease-in-out infinite;
+        }
+
+        .star-medium {
+            width: 2px;
+            height: 2px;
+            animation: blink-medium 2.5s ease-in-out infinite;
+        }
+
+        .star-large {
+            width: 3px;
+            height: 3px;
+            animation: blink-slow 3.5s ease-in-out infinite;
+        }
+
+        @keyframes blink-fast {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+
+        @keyframes blink-medium {
+            0%, 100% { opacity: 0.4; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.3); }
+        }
+
+        @keyframes blink-slow {
+            0%, 100% { opacity: 0.5; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.4); }
+        }
+
+        /* CSS VARIABLES */
+        :root {
+            --accent-blue: #4a9eff;
+            --accent-teal: #00c9b7;
+            --accent-gold: #d4af37;
+            --bg-dark: #000000;
+            --bg-card: #0a0e1a;
+            --nav-blue: #0d1b2a;
+            --text-primary: #e8edf4;
+            --text-secondary: #9ba6b8;
+            --border-subtle: #1f2937;
+        }
+
+        /* CUSTOM CURSOR */
+        body {
+            cursor: none;
+        }
+
+        .cursor {
+            width: 18px;
+            height: 18px;
+            border: 2px solid var(--accent-blue);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            transition: transform 0.15s ease;
+        }
+
+        .cursor-trail {
+            width: 6px;
+            height: 6px;
+            background: var(--accent-teal);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9998;
+            opacity: 0.5;
+        }
+
+        /* NAVIGATION - DARK NAVY BLUE */
+        .navbar {
+            background: var(--nav-blue);
+            padding: 1.2rem 3rem;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(74, 158, 255, 0.2);
+            transition: box-shadow 0.3s ease;
+        }
+
+        .navbar.scrolled {
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.8);
+        }
+
+        .navbar h1 {
+            font-size: 1.6rem;
+            color: var(--text-primary);
+            font-weight: 500;
+            letter-spacing: 1px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            letter-spacing: 0.5px;
+            transition: color 0.3s ease;
+            cursor: none;
+            text-transform: uppercase;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent-blue);
+        }
+
+        /* MAIN CONTENT */
+        .page {
+            display: none;
+            min-height: 100vh;
+            padding: 9rem 3rem 5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* HOME PAGE */
+        .hero {
+            text-align: center;
+            padding: 5rem 0 4rem;
+            border-bottom: 1px solid var(--border-subtle);
+            margin-bottom: 5rem;
+        }
+
+        .hero h2 {
+            font-size: 4.5rem;
+            margin-bottom: 1.8rem;
+            color: var(--text-primary);
+            font-weight: 400;
+            line-height: 1.2;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            max-width: 750px;
+            margin: 0 auto 3rem;
+            line-height: 1.8;
+        }
+
+        .cta-button {
+            background: var(--accent-blue);
+            color: white;
+            padding: 1.1rem 3rem;
+            border: none;
+            border-radius: 4px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: none;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .cta-button:hover {
+            background: var(--accent-teal);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(74, 158, 255, 0.3);
+        }
+
+        /* REASONS SECTION */
+        .reasons-section {
+            padding: 5rem 0;
+            border-bottom: 1px solid var(--border-subtle);
+            margin-bottom: 5rem;
+        }
+
+        .reasons-section h3 {
+            font-size: 2.8rem;
+            text-align: center;
+            margin-bottom: 4rem;
+            color: var(--text-primary);
+            font-weight: 400;
+        }
+
+        .reasons-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 3rem;
+        }
+
+        .reason-card {
+            background: var(--bg-card);
+            padding: 3rem;
+            border: 1px solid var(--border-subtle);
+            transition: all 0.3s ease;
+        }
+
+        .reason-card:hover {
+            border-color: var(--accent-blue);
+            transform: translateY(-3px);
+        }
+
+        .reason-card h4 {
+            font-size: 1.6rem;
+            margin-bottom: 1.2rem;
+            color: var(--accent-blue);
+            font-weight: 500;
+        }
+
+        .reason-card p {
+            color: var(--text-secondary);
+            line-height: 1.8;
+            font-size: 1.05rem;
+        }
+
+        /* FEATURED PLANET */
+        .featured-planet {
+            padding: 5rem 0;
+            border-bottom: 1px solid var(--border-subtle);
+            margin-bottom: 5rem;
+        }
+
+        .featured-planet h3 {
+            font-size: 2.8rem;
+            margin-bottom: 3rem;
+            color: var(--text-primary);
+            font-weight: 400;
+            text-align: center;
+        }
+
+        .planet-showcase {
+            display: grid;
+            grid-template-columns: 400px 1fr;
+            gap: 4rem;
+            align-items: center;
+            background: var(--bg-card);
+            padding: 4rem;
+            border: 1px solid var(--border-subtle);
+        }
+
+        .planet-image-large {
+            width: 400px;
+            height: 400px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--border-subtle);
+            box-shadow: 0 0 60px rgba(74, 158, 255, 0.2);
+        }
+
+        .showcase-content h4 {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--accent-blue);
+            font-weight: 400;
+        }
+
+        .showcase-content p {
+            font-size: 1.15rem;
+            color: var(--text-secondary);
+            line-height: 1.9;
+            margin-bottom: 2.5rem;
+        }
+
+        /* STATS SECTION */
+        .stats-section {
+            padding: 5rem 0;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2rem;
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            padding: 2.5rem;
+            text-align: center;
+            border: 1px solid var(--border-subtle);
+            transition: border-color 0.3s ease;
+        }
+
+        .stat-card:hover {
+            border-color: var(--accent-teal);
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 300;
+            color: var(--accent-blue);
+            margin-bottom: 0.8rem;
+            font-family: "Garamond", Georgia, serif;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* PLANETS PAGE */
+        .planets-header {
+            text-align: center;
+            margin-bottom: 5rem;
+            padding-bottom: 3rem;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .planets-header h2 {
+            font-size: 4rem;
+            color: var(--text-primary);
+            margin-bottom: 1.5rem;
+            font-weight: 400;
+        }
+
+        .planets-header p {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+        }
+
+        .planet-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            padding: 4rem;
+            margin-bottom: 3.5rem;
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            gap: 4rem;
+            align-items: center;
+            transition: border-color 0.3s ease;
+        }
+
+        .planet-card:hover {
+            border-color: var(--accent-blue);
+        }
+
+        .planet-card:nth-child(even) {
+            grid-template-columns: 1fr 350px;
+        }
+
+        .planet-card:nth-child(even) .planet-image {
+            order: 2;
+        }
+
+        .planet-card:nth-child(even) .planet-info {
+            order: 1;
+        }
+
+        .planet-image {
+            width: 350px;
+            height: 350px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--border-subtle);
+            box-shadow: 0 0 50px rgba(74, 158, 255, 0.15);
+        }
+
+        .planet-info h3 {
+            font-size: 2.8rem;
+            margin-bottom: 1.5rem;
+            color: var(--accent-blue);
+            font-weight: 400;
+        }
+
+        .planet-info p {
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            line-height: 1.9;
+            font-size: 1.1rem;
+        }
+
+        .planet-facts {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+        }
+
+        .fact {
+            background: rgba(74, 158, 255, 0.05);
+            padding: 1rem 1.5rem;
+            border: 1px solid var(--border-subtle);
+        }
+
+        .fact strong {
+            color: var(--accent-teal);
+            display: block;
+            margin-bottom: 0.4rem;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .fact span {
+            color: var(--text-primary);
+            font-size: 1.15rem;
+        }
+
+        /* CALCULATORS PAGE */
+        .calculators-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 3rem;
+            margin-top: 4rem;
+        }
+
+        .calculator-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            padding: 3rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .calculator-card:hover {
+            border-color: var(--accent-blue);
+        }
+
+        .calculator-card h3 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: var(--accent-blue);
+            font-weight: 400;
+        }
+
+        .calculator-card > p {
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            line-height: 1.7;
+        }
+
+        .calculator-input {
+            margin-bottom: 1.8rem;
+        }
+
+        .calculator-input label {
+            display: block;
+            margin-bottom: 0.7rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .calculator-input select,
+        .calculator-input input {
+            width: 100%;
+            padding: 1rem;
+            background: var(--bg-dark);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-primary);
+            font-size: 1rem;
+            cursor: none;
+            transition: border-color 0.3s ease;
+        }
+
+        .calculator-input select:focus,
+        .calculator-input input:focus {
+            outline: none;
+            border-color: var(--accent-blue);
+        }
+
+        .calc-button {
+            background: var(--accent-blue);
+            color: white;
+            padding: 1rem 2.5rem;
+            border: none;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: none;
+            width: 100%;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .calc-button:hover {
+            background: var(--accent-teal);
+            transform: translateY(-2px);
+        }
+
+        .calculator-result {
+            margin-top: 2rem;
+            padding: 2rem;
+            background: rgba(74, 158, 255, 0.05);
+            border: 1px solid var(--border-subtle);
+            min-height: 80px;
+        }
+
+        .result-text {
+            color: var(--text-primary);
+            font-size: 1.05rem;
+            line-height: 1.8;
+        }
+
+        .result-text strong {
+            color: var(--accent-blue);
+        }
+
+        /* ABOUT PAGE */
+        .about-content {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .about-content h2 {
+            font-size: 4rem;
+            margin-bottom: 2.5rem;
+            color: var(--text-primary);
+            font-weight: 400;
+        }
+
+        .about-content h3 {
+            font-size: 2.2rem;
+            margin: 3rem 0 1.5rem;
+            color: var(--accent-blue);
+            font-weight: 400;
+        }
+
+        .about-content p {
+            font-size: 1.15rem;
+            color: var(--text-secondary);
+            line-height: 1.9;
+            margin-bottom: 2rem;
+        }
+
+        .tech-stack {
+            display: flex;
+            gap: 1.2rem;
+            flex-wrap: wrap;
+            margin-top: 2rem;
+        }
+
+        .tech-badge {
+            background: var(--bg-card);
+            padding: 0.8rem 1.8rem;
+            border: 1px solid var(--border-subtle);
+            color: var(--text-primary);
+            font-weight: 500;
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 1024px) {
+            .planet-showcase {
+                grid-template-columns: 1fr;
+                justify-items: center;
+                text-align: center;
+            }
+
+            .planet-card {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .planet-card:nth-child(even) {
+                grid-template-columns: 1fr;
+            }
+
+            .planet-card:nth-child(even) .planet-image,
+            .planet-card:nth-child(even) .planet-info {
+                order: 0;
+            }
+
+            .planet-image {
+                margin: 0 auto;
+            }
+
+            .calculators-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1rem 2rem;
+            }
+
+            .nav-links {
+                gap: 1.5rem;
+            }
+
+            .hero h2 {
+                font-size: 2.8rem;
+            }
+
+            .reasons-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .planet-facts {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Dynamic Starfield Background -->
+    <div id="starfield"></div>
+
+    <!-- Custom Cursor -->
+    <div class="cursor"></div>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <h1>SOLAR SYSTEM EXPLORER</h1>
+        <ul class="nav-links">
+            <li><a href="#home" onclick="showPage('home')">Home</a></li>
+            <li><a href="#planets" onclick="showPage('planets')">Planets</a></li>
+            <li><a href="#calculators" onclick="showPage('calculators')">Calculators</a></li>
+            <li><a href="#about" onclick="showPage('about')">About</a></li>
+        </ul>
+    </nav>
+
+    <!-- HOME PAGE -->
+    <div id="home" class="page active">
+        <div class="container">
+            <section class="hero">
+                <h2>Journey Through Our Solar System</h2>
+                <p>An exploration of the eight planets that orbit our Sun, from the scorching heat of Mercury to the frozen reaches of Neptune. Discover the science, beauty, and wonder of our cosmic neighborhood.</p>
+                <a href="#planets" onclick="showPage('planets')" class="cta-button">Explore the Planets</a>
+            </section>
+
+            <section class="reasons-section">
+                <h3>The Importance of Space Exploration</h3>
+                <div class="reasons-grid">
+                    <div class="reason-card">
+                        <h4>Scientific Discovery</h4>
+                        <p>Studying our solar system reveals fundamental truths about planetary formation, the origins of life, and the physics that govern celestial mechanics across the universe.</p>
+                    </div>
+                    <div class="reason-card">
+                        <h4>Technological Innovation</h4>
+                        <p>Space exploration has driven breakthroughs in materials science, computing, telecommunications, and medicine that have revolutionized life on Earth.</p>
+                    </div>
+                    <div class="reason-card">
+                        <h4>Planetary Perspective</h4>
+                        <p>Understanding our place in the cosmos provides crucial perspective on the fragility and uniqueness of Earth, inspiring environmental stewardship and global cooperation.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="featured-planet">
+                <h3>Featured: Saturn</h3>
+                <div class="planet-showcase">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/c/c7/Saturn_during_Equinox.jpg" alt="Saturn" class="planet-image-large">
+                    <div class="showcase-content">
+                        <h4>The Ringed Giant</h4>
+                        <p>Saturn's magnificent ring system consists of billions of particles ranging from tiny grains to house-sized chunks of ice and rock. This gas giant, the second-largest planet in our solar system, possesses 83 known moons and could float in a sufficiently large ocean due to its remarkably low density.</p>
+                        <div class="planet-facts">
+                            <div class="fact">
+                                <strong>Distance</strong>
+                                <span>1.4B km</span>
+                            </div>
+                            <div class="fact">
+                                <strong>Orbital Period</strong>
+                                <span>29.5 years</span>
+                            </div>
+                            <div class="fact">
+                                <strong>Moons</strong>
+                                <span>83</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="stats-section">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number">8</div>
+                        <div class="stat-label">Major Planets</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">200+</div>
+                        <div class="stat-label">Known Moons</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">4.6B</div>
+                        <div class="stat-label">Years Old</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">∞</div>
+                        <div class="stat-label">Discoveries</div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <!-- PLANETS PAGE -->
+    <div id="planets" class="page">
+        <div class="container">
+            <div class="planets-header">
+                <h2>The Planets</h2>
+                <p>Eight worlds, each with unique characteristics and mysteries waiting to be explored</p>
+            </div>
+
+            <div class="planet-card">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/4/4a/Mercury_in_true_color.jpg" alt="Mercury" class="planet-image">
+                <div class="planet-info">
+                    <h3>Mercury</h3>
+                    <p>The smallest planet in our solar system and closest to the Sun, Mercury experiences dramatic temperature swings from 430°C during the day to -180°C at night. Its heavily cratered surface resembles Earth's Moon, preserving a geological record spanning billions of years.</p>
+                    <div class="planet-facts">
+                        <div class="fact">
+                            <strong>Distance</strong>
+                            <span>57.9M km</span>
+                        </div>
+                        <div class="fact">
+                            <strong>Year</strong>
+                            <span>88 days</span>
+                        </div>
+                        <div class="fact">
+                            <strong>Moons</strong>
+                            <span>0</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="planet-card">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/e/e5/Venus-real_color.jpg" alt="Venus" class="planet-image">
+                <div class="planet-info">
+                    <h3>Venus</h3>
+                    <p>Earth's twin in size but hellish in nature, Venus possesses a dense atmosphere of carbon dioxide that creates surface temperatures of 465°C—hot enough to melt lead. The planet's thick clouds of sulfuric acid reflect sunlight beautifully, making Venus the brightest planet in Earth's sky.</p>
+                    <div class="planet-facts">
+                        <div class="fact">
+                            <strong>Distance</strong>
+                            <span>108.2M km</span>
+                        </div>
+                        <div class="fact">
+                            <strong>Year</strong>
+                            <span>225 days</span>
+                        </div>
+                        <div class="fact">
+                            <strong>Moons</strong>
+                            <span>0</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="planet-card">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/9/97/The_Earth_seen_from_Apollo_17.jpg" alt="Earth" class="planet-image">
+                <div class="planet-info">
+                    <h3>Earth</h3>
+                    <p>Our home world and the only known planet to harbor life, Earth's unique combination of liquid water, protective atmosphere, and optimal distance from the Sun creates conditions that support an extraordinary diversity of organisms across every ecosystem.</p>
+                    <div class="planet-facts">
+                        <div class="fact">
+                            <strong>Distance</strong>
+                            <span>149.6M km</span>
+                        </div>
+                        <div class="fact">
+                            <strong>Year</strong>
+                            <span>365.25 days</span>
+                        </div>
+                        <div class="fact">
+                            <strong>Moons</strong>
+                            <span>1</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="planet-card">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/0/02/OSIRIS_Mars_true_color.jpg" alt="Mars" class="planet-image">
+                <div class="planet-info">
+                    <h3>Mars</h3>
+                    <p>The Red Planet captivates with its rust-colored surface, towering Olympus Mons—the solar system's largest volcano—and Valles Marineris, a canyon system that dwarfs the Grand Canyon. Evidence of ancient river valleys suggests Mars once had flowing water.</p>
+                    <div class="planet-facts">
+                        <div class="fact">
+                            <strong>Distance</strong>
+                            <span>227.9M km</span>
+                        </div>
+                        <div class="fact">
+                            <strong>Year</strong>
+                            <span>687 days</span>
+                        </div>
+                        <div class="fact">
+                            <strong>Moons</strong>
+                            <span>2</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="planet-card">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/2/2b/Jupiter_and_its_shrunken_Great_Red_Spot.jpg" alt="Jupiter" class="planet-image">
+                <div class="planet-info">
+                    <h3>Jupiter</h3>
+                    <p>The undisputed king of planets, Jupiter's mass exceeds that of all other planets combined. Its Great Red Spot—a storm larger than Earth—has raged for centuries. Jupiter's powerful magnetic field and 95 moons make it a miniature solar system unto itself.</p>
+                    <div class="planet-facts">
+                        <div class="fact">
+                            <strong>Distance</strong>
+                            <span>778.5M km</span>
+                        </div>
+                        <div class="fact">
+                            <strong>Year</strong>
+                            <span>11.9 years</span>
+                        </div>
+                        <div class="fact">
+                            <strong>Moons</strong>
+                            <span>95</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="planet-card">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/c/c7/Saturn_during_Equinox.jpg" alt="Saturn" class="planet-image">
+                <div class="planet-info">
+                    <h3>Saturn</h3>
+                    <p>Saturn's breathtaking ring system, composed of countless particles of ice and rock, extends hundreds of thousands of kilometers into space yet is remarkably thin—in some places only 10 meters thick. The planet itself is a gas giant with winds reaching 1,800 km/h.</p>
+                    <div class="planet-facts">
+                        <div class="fact">
+                            <strong>Distance</strong>
+                            <span>1.4B km</span>
+                        </div>
+                        <div class="fact">
+                            <strong>Year</strong>
+                            <span>29.5 years</span>
+                        </div>
+                        <div class="fact">
+                            <strong>Moons</strong>
+                            <span>83</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="planet-card">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/3/3d/Uranus2.jpg" alt="Uranus" class="planet-image">
+                <div class="planet-info">
+                    <h3>Uranus</h3>
+                    <p>Uranus presents one of the solar system's greatest mysteries: it rotates on its side, with an axial tilt of 98 degrees. This ice giant's pale blue color comes from methane in its atmosphere, which absorbs red light and reflects blue wavelengths back into space.</p>
+                    <div class="planet-facts">
+                        <div class="fact">
+                            <strong>Distance</strong>
+                            <span>2.9B km</span>
+                        </div>
+                        <div class="fact">
+                            <strong>Year</strong>
+                            <span>84 years</span>
+                        </div>
+                        <div class="fact">
+                            <strong>Moons</strong>
+                            <span>27</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="planet-card">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/6/63/Neptune_-_Voyager_2_%2829347980845%29_flatten_crop.jpg" alt="Neptune" class="planet-image">
+                <div class="planet-info">
+                    <h3>Neptune</h3>
+                    <p>The solar system's windiest planet, Neptune experiences supersonic winds exceeding 2,000 km/h in its upper atmosphere. This distant ice giant's vivid blue appearance and dynamic weather systems continue to intrigue astronomers studying its mysterious dark spots and white clouds.</p>
+                    <div class="planet-facts">
+                        <div class="fact">
+                            <strong>Distance</strong>
+                            <span>4.5B km</span>
+                        </div>
+                        <div class="fact">
+                            <strong>Year</strong>
+                            <span>165 years</span>
+                        </div>
+                        <div class="fact">
+                            <strong>Moons</strong>
+                            <span>14</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CALCULATORS PAGE -->
+    <div id="calculators" class="page">
+        <div class="container">
+            <div class="planets-header">
+                <h2>Astronomical Calculators</h2>
+                <p>Interactive tools for exploring planetary science and celestial mechanics</p>
+            </div>
+
+            <div class="calculators-grid">
+                <div class="calculator-card">
+                    <h3>Distance Calculator</h3>
+                    <p>Calculate precise distances between celestial bodies in our solar system.</p>
+                    <div class="calculator-input">
+                        <label>From:</label>
+                        <select id="distanceFrom">
+                            <option value="sun">Sun</option>
+                            <option value="mercury">Mercury</option>
+                            <option value="venus">Venus</option>
+                            <option value="earth" selected>Earth</option>
+                            <option value="mars">Mars</option>
+                            <option value="jupiter">Jupiter</option>
+                            <option value="saturn">Saturn</option>
+                            <option value="uranus">Uranus</option>
+                            <option value="neptune">Neptune</option>
+                        </select>
+                    </div>
+                    <div class="calculator-input">
+                        <label>To:</label>
+                        <select id="distanceTo">
+                            <option value="sun">Sun</option>
+                            <option value="mercury">Mercury</option>
+                            <option value="venus">Venus</option>
+                            <option value="earth">Earth</option>
+                            <option value="mars" selected>Mars</option>
+                            <option value="jupiter">Jupiter</option>
+                            <option value="saturn">Saturn</option>
+                            <option value="uranus">Uranus</option>
+                            <option value="neptune">Neptune</option>
+                        </select>
+                    </div>
+                    <button class="calc-button" onclick="calculateDistance()">Calculate</button>
+                    <div id="distanceResult" class="calculator-result"></div>
+                </div>
+
+                <div class="calculator-card">
+                    <h3>Planetary Weight Calculator</h3>
+                    <p>Discover how gravitational differences affect your weight across planets.</p>
+                    <div class="calculator-input">
+                        <label>Your Earth Weight (kg):</label>
+                        <input type="number" id="earthWeight" placeholder="70" min="1">
+                    </div>
+                    <div class="calculator-input">
+                        <label>Calculate For:</label>
+                        <select id="weightPlanet">
+                            <option value="mercury">Mercury</option>
+                            <option value="venus">Venus</option>
+                            <option value="mars" selected>Mars</option>
+                            <option value="jupiter">Jupiter</option>
+                            <option value="saturn">Saturn</option>
+                            <option value="uranus">Uranus</option>
+                            <option value="neptune">Neptune</option>
+                        </select>
+                    </div>
+                    <button class="calc-button" onclick="calculateWeight()">Calculate</button>
+                    <div id="weightResult" class="calculator-result"></div>
+                </div>
+
+                <div class="calculator-card">
+                    <h3>Interplanetary Travel Time</h3>
+                    <p>Estimate travel duration based on spacecraft velocity and planetary distances.</p>
+                    <div class="calculator-input">
+                        <label>Destination:</label>
+                        <select id="travelDestination">
+                            <option value="mercury">Mercury</option>
+                            <option value="venus">Venus</option>
+                            <option value="mars" selected>Mars</option>
+                            <option value="jupiter">Jupiter</option>
+                            <option value="saturn">Saturn</option>
+                            <option value="uranus">Uranus</option>
+                            <option value="neptune">Neptune</option>
+                        </select>
+                    </div>
+                    <div class="calculator-input">
+                        <label>Spacecraft Speed (km/s):</label>
+                        <input type="number" id="spacecraftSpeed" placeholder="20" min="1" value="20">
+                    </div>
+                    <button class="calc-button" onclick="calculateTravelTime()">Calculate</button>
+                    <div id="travelResult" class="calculator-result"></div>
+                </div>
+
+                <div class="calculator-card">
+                    <h3>Orbital Period Calculator</h3>
+                    <p>Calculate orbital periods using Kepler's Third Law of planetary motion.</p>
+                    <div class="calculator-input">
+                        <label>Select Planet:</label>
+                        <select id="orbitalPlanet">
+                            <option value="mercury">Mercury</option>
+                            <option value="venus">Venus</option>
+                            <option value="earth" selected>Earth</option>
+                            <option value="mars">Mars</option>
+                            <option value="jupiter">Jupiter</option>
+                            <option value="saturn">Saturn</option>
+                            <option value="uranus">Uranus</option>
+                            <option value="neptune">Neptune</option>
+                        </select>
+                    </div>
+                    <button class="calc-button" onclick="calculateOrbitalPeriod()">Calculate</button>
+                    <div id="orbitalResult" class="calculator-result"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ABOUT PAGE -->
+    <div id="about" class="page">
+        <div class="container">
+            <div class="about-content">
+                <h2>About This Project</h2>
+                <p>Solar System Explorer serves as an interactive educational resource dedicated to making planetary science accessible and engaging for learners worldwide. Through scientifically accurate data and intuitive visualizations, we bring the wonders of our cosmic neighborhood to your screen.</p>
+
+                <h3>Mission Statement</h3>
+                <p>Our mission is to foster scientific literacy and inspire curiosity about space exploration. We believe that understanding our solar system is fundamental to appreciating humanity's place in the universe and the importance of scientific inquiry.</p>
+
+                <h3>Educational Approach</h3>
+                <p>This platform combines detailed planetary information with interactive calculators that demonstrate real astronomical principles. All calculations employ scientifically accurate formulas based on current astronomical data from NASA and other authoritative space agencies.</p>
+
+                <h3>Technical Implementation</h3>
+                <div class="tech-stack">
+                    <div class="tech-badge">HTML5</div>
+                    <div class="tech-badge">CSS3</div>
+                    <div class="tech-badge">JavaScript</div>
+                    <div class="tech-badge">Responsive Design</div>
+                </div>
+
+                <h3>Data Accuracy</h3>
+                <p>All planetary measurements, including orbital distances, gravitational constants, and physical characteristics, are sourced from NASA's planetary fact sheets and updated to reflect the most current scientific understanding.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // CREATE DYNAMIC STARFIELD WITH MULTIPLE SIZES
+        function createStarfield() {
+            const starfield = document.getElementById('starfield');
+            const starCounts = {
+                small: 100,
+                medium: 50,
+                large: 30
+            };
+
+            // Create small stars
+            for (let i = 0; i < starCounts.small; i++) {
+                const star = document.createElement('div');
+                star.className = 'star star-small';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animationDelay = Math.random() * 2 + 's';
+                starfield.appendChild(star);
+            }
+
+            // Create medium stars
+            for (let i = 0; i < starCounts.medium; i++) {
+                const star = document.createElement('div');
+                star.className = 'star star-medium';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animationDelay = Math.random() * 3 + 's';
+                starfield.appendChild(star);
+            }
+
+            // Create large stars
+            for (let i = 0; i < starCounts.large; i++) {
+                const star = document.createElement('div');
+                star.className = 'star star-large';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animationDelay = Math.random() * 4 + 's';
+                starfield.appendChild(star);
+            }
+        }
+
+        createStarfield();
+
+        // PLANETARY DATA
+        const planetData = {
+            sun: { distance: 0, name: 'Sun', gravity: 274, orbitalPeriod: 0 },
+            mercury: { distance: 57.9, name: 'Mercury', gravity: 3.7, orbitalPeriod: 88 },
+            venus: { distance: 108.2, name: 'Venus', gravity: 8.87, orbitalPeriod: 225 },
+            earth: { distance: 149.6, name: 'Earth', gravity: 9.81, orbitalPeriod: 365.25 },
+            mars: { distance: 227.9, name: 'Mars', gravity: 3.71, orbitalPeriod: 687 },
+            jupiter: { distance: 778.5, name: 'Jupiter', gravity: 24.79, orbitalPeriod: 4333 },
+            saturn: { distance: 1427, name: 'Saturn', gravity: 10.44, orbitalPeriod: 10759 },
+            uranus: { distance: 2871, name: 'Uranus', gravity: 8.69, orbitalPeriod: 30687 },
+            neptune: { distance: 4497, name: 'Neptune', gravity: 11.15, orbitalPeriod: 60190 }
+        };
+
+        // PAGE NAVIGATION
+        function showPage(pageId) {
+            const pages = document.querySelectorAll('.page');
+            pages.forEach(page => page.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+        }
+
+        // CUSTOM CURSOR
+        const cursor = document.querySelector('.cursor');
+        const trails = [];
+        const trailCount = 5;
+
+        for (let i = 0; i < trailCount; i++) {
+            const trail = document.createElement('div');
+            trail.className = 'cursor-trail';
+            document.body.appendChild(trail);
+            trails.push({ element: trail, x: 0, y: 0 });
+        }
+
+        let mouseX = 0, mouseY = 0;
+
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+        });
+
+        function animateCursor() {
+            cursor.style.left = mouseX + 'px';
+            cursor.style.top = mouseY + 'px';
+
+            trails.forEach((trail, index) => {
+                trail.x += (mouseX - trail.x) * (0.1 - index * 0.01);
+                trail.y += (mouseY - trail.y) * (0.1 - index * 0.01);
+                trail.element.style.left = trail.x + 'px';
+                trail.element.style.top = trail.y + 'px';
+            });
+
+            requestAnimationFrame(animateCursor);
+        }
+        animateCursor();
+
+        // NAVBAR SCROLL SHADOW
+        window.addEventListener('scroll', () => {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // CALCULATORS
+        function calculateDistance() {
+            const from = document.getElementById('distanceFrom').value;
+            const to = document.getElementById('distanceTo').value;
+            const resultDiv = document.getElementById('distanceResult');
+
+            if (from === to) {
+                resultDiv.innerHTML = '<p class="result-text">Please select two different celestial bodies.</p>';
+                return;
+            }
+
+            const dist1 = planetData[from].distance;
+            const dist2 = planetData[to].distance;
+            const distanceKm = Math.abs(dist2 - dist1) * 1000000;
+            const distanceMiles = distanceKm * 0.621371;
+            const lightSpeed = 299792;
+            const timeSeconds = distanceKm / lightSpeed;
+            const timeMinutes = timeSeconds / 60;
+            const timeHours = timeMinutes / 60;
+
+            let timeStr = timeHours > 1 ? `${timeHours.toFixed(2)} hours` : timeMinutes > 1 ? `${timeMinutes.toFixed(2)} minutes` : `${timeSeconds.toFixed(2)} seconds`;
+
+            resultDiv.innerHTML = `<p class="result-text"><strong>Distance:</strong> ${distanceKm.toLocaleString()} km (${distanceMiles.toLocaleString()} mi)<br><br><strong>Light travel time:</strong> ${timeStr}</p>`;
+        }
+
+        function calculateWeight() {
+            const earthWeight = parseFloat(document.getElementById('earthWeight').value);
+            const planet = document.getElementById('weightPlanet').value;
+            const resultDiv = document.getElementById('weightResult');
+
+            if (!earthWeight || earthWeight <= 0) {
+                resultDiv.innerHTML = '<p class="result-text">Please enter a valid weight.</p>';
+                return;
+            }
+
+            const earthGravity = 9.81;
+            const planetGravity = planetData[planet].gravity;
+            const planetWeight = (earthWeight * planetGravity / earthGravity).toFixed(2);
+            const percentage = ((planetGravity / earthGravity) * 100).toFixed(1);
+
+            resultDiv.innerHTML = `<p class="result-text">On <strong>${planetData[planet].name}</strong>, you would weigh <strong>${planetWeight} kg</strong><br>(${percentage}% of your Earth weight)</p>`;
+        }
+
+        function calculateTravelTime() {
+            const destination = document.getElementById('travelDestination').value;
+            const speed = parseFloat(document.getElementById('spacecraftSpeed').value);
+            const resultDiv = document.getElementById('travelResult');
+
+            if (!speed || speed <= 0) {
+                resultDiv.innerHTML = '<p class="result-text">Please enter a valid spacecraft speed.</p>';
+                return;
+            }
+
+            const earthDistance = planetData.earth.distance;
+            const destDistance = planetData[destination].distance;
+            const distanceKm = Math.abs(destDistance - earthDistance) * 1000000;
+            const timeSeconds = distanceKm / speed;
+            const timeDays = timeSeconds / 86400;
+            const timeYears = timeDays / 365.25;
+
+            let timeStr = timeYears >= 1 ? `${timeYears.toFixed(2)} years` : `${timeDays.toFixed(1)} days`;
+
+            resultDiv.innerHTML = `<p class="result-text">Travel time to <strong>${planetData[destination].name}</strong> at ${speed} km/s:<br><strong>${timeStr}</strong> (${distanceKm.toLocaleString()} km)</p>`;
+        }
+
+        function calculateOrbitalPeriod() {
+            const planet = document.getElementById('orbitalPlanet').value;
+            const resultDiv = document.getElementById('orbitalResult');
+            const days = planetData[planet].orbitalPeriod;
+            const years = (days / 365.25).toFixed(2);
+
+            resultDiv.innerHTML = `<p class="result-text"><strong>${planetData[planet].name}</strong> completes one orbit in:<br><strong>${days.toLocaleString()} Earth days</strong> or <strong>${years} Earth years</strong></p>`;
+        }
+    </script>
+</body>
+</html>
